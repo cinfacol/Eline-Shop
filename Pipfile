@@ -4,8 +4,29 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+django = "*"
+psycopg = "*"
+djangorestframework = "*"
+django-environ = "*"
+djoser = "*"
+social-auth-app-django = "*"
+django-ckeditor = "*"
+pillow = "*"
+mutagen = "*"
+argon2-cffi = "*"
+braintree = "*"
+pyjwt = "*"
+boto3 = "*"
+django-storages = "*"
+markdown = "*"
+gunicorn = "*"
+whitenoise = "*"
+requests = "*"
+django-cors-headers = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.10"

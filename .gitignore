@@ -10,6 +10,7 @@
 
 # production
 /build
+/media
 
 # misc
 .DS_Store
@@ -151,3 +152,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+static/
