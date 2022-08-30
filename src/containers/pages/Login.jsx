@@ -47,7 +47,7 @@ const Login = ({
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Autentica tu Cuenta</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
-            <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
               regístrate
             </Link>
           </p>
