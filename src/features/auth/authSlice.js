@@ -1,20 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { setMessage } from '../message/messageSlice';
-import authService from '../../services/auth.service';
+import authService from './services/auth.service';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
 
-const initialState = {
-  access: localStorage.getItem('access'),
-  refresh: localStorage.getItem('refresh'),
-  isAuthenticated: null,
-  user: JSON.parse(localStorage.getItem('user')),
-  loading: false,
-  error: null
-}
-
-// Register user
+// Signup user
 export const signup = createAsyncThunk(
   'auth/signup',
   async ({ first_name, last_name, email, password, re_password }, thunkAPI) => {
@@ -26,16 +17,42 @@ export const signup = createAsyncThunk(
           setMessage('Tu cuenta se ha registrada exitosamente, revisa tu email para activarla')
         );
         return response.data;
+      } else {
+        thunkAPI.dispatch(
+          setMessage('No fue posible registrar tu cuenta')
+        );
       }
-
     } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
       thunkAPI.dispatch(setMessage(message));
+
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
+
+// Activate user
+export const activate = createAsyncThunk(
+  'auth/activate',
+  async ({ uid, token }, thunkAPI) => {
+    try {
+      const response = await authService.activate(uid, token);
+
+      if (response.status === 204) {
+        thunkAPI.dispatch(
+          setMessage('Tu cuenta ha sido activada exitosamente')
+        );
+        thunkAPI.getState();
+        return response.data;
+      } else {
+        thunkAPI.dispatch(
+          setMessage('Error activando cuenta')
+        );
+      }
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      thunkAPI.dispatch(setMessage(message));
+
       return thunkAPI.rejectWithValue();
     }
   }
@@ -58,32 +75,60 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   authService.logout()
 })
 
-export const authSlice = createSlice({
+const initialState = {
+  access: localStorage.getItem('access'),
+  refresh: localStorage.getItem('refresh'),
+  isAuthenticated: null,
+  user: user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null },
+  status: 'idle',
+  error: false
+}
+
+const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
-  extraReducers: {
-    [signup.fulfilled]: (state) => {
-      state.isLoggedIn = false;
-      console.log('estado', state.isLoggedIn);
-    },
-    [signup.rejected]: (state) => {
-      state.isLoggedIn = false;
-    },
-    [login.fulfilled]: (state, action) => {
-      state.isLoggedIn = true;
-      state.user = action.payload.user;
-    },
-    [login.rejected]: (state) => {
-      state.isLoggedIn = false;
-      state.user = null;
-    },
-    [logout.fulfilled]: (state) => {
-      state.isLoggedIn = false;
-      state.user = null;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(signup.pending, (state) => {
+        if (state.status === 'idle') {
+          state.status = 'pending'
+        }
+      })
+      .addCase(signup.fulfilled, (state) => {
+        if (state.status === 'pending') {
+          state.status = 'idle'
+          state.isLoggedIn = false;
+        }
+      })
+      .addCase(signup.rejected, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle'
+          state.error = action.error
+          state.isLoggedIn = false;
+        }
+      })
+
+      .addCase(activate.pending, (state, action) => {
+        if (state.status === 'idle') {
+          state.status = 'pending'
+        }
+      })
+      .addCase(activate.fulfilled, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle'
+          state.isLoggedIn = false;
+        }
+      })
+      .addCase(activate.rejected, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle'
+          state.error = action.error
+          state.isLoggedIn = false;
+        }
+      })
   },
 })
 
-export const { reducer } = authSlice;
+const { reducer } = authSlice;
 export default reducer;

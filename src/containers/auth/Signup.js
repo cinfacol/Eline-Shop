@@ -1,17 +1,22 @@
 import Layout from "../../hocs/Layout";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { signup } from '../../features/auth/authSlice';
+import { signup } from "../../features/auth/authSlice";
 import { clearMessage } from "../../features/message/messageSlice";
+import { Oval } from 'react-loader-spinner'
 
-const Register = () => {
-  const [successful, setSuccessful] = useState(false);
+const Signup = ({ loading }) => {
+  const [accountCreated, setAccountCreated] = useState(false);
 
   const { message } = useSelector((state) => state.message);
-  { console.log('mensaje', message) };
+  
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     dispatch(clearMessage());
@@ -64,18 +69,24 @@ const Register = () => {
       .oneOf([Yup.ref('password'), null], 'Passwords must match'),
   });
 
-  const handleRegister = (formValue) => {
-    const { first_name, last_name, email, password, re_password } = formValue;
+  const handleSignup = (formValue) => {
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+      re_password
+    } = formValue;
 
-    setSuccessful(false);
+    setAccountCreated(false);
 
     dispatch(signup({ first_name, last_name, email, password, re_password }))
       .unwrap()
       .then(() => {
-        setSuccessful(true);
+        setAccountCreated(true);
       })
       .catch(() => {
-        setSuccessful(false);
+        setAccountCreated(false);
       });
   };
 
@@ -95,10 +106,10 @@ const Register = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={handleRegister}
+              onSubmit={handleSignup}
             >
               <Form>
-                {!successful && (
+                {!accountCreated && (
                   <div>
                     <div>
                       <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
@@ -195,21 +206,33 @@ const Register = () => {
                       </div>
                     </div>
                     <div className="mt-5">
-                      <button
-                        type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      >
-                        Register
-                      </button>
+                      {(loading === 'pending') ?
+                        <button
+                          className="inline-flex mt-12 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          <Oval
+                            color="#fff"
+                            width={20}
+                            height={20}
+                          />
+                        </button> :
+                        <button
+                          type="submit"
+                          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                          Sign Up
+                        </button>
+                      }
+
                     </div>
                   </div>
                 )}
               </Form>
             </Formik>
-            {(message || successful) && (
+            {(message || accountCreated) && (
               <div className="flex w-full justify-center shadow-sm rounded-md mt-4">
                 <div
-                  className={successful ? "bg-green-600 py-4 px-6 rounded-md flex items-center" : "bg-red-600 py-4 px-6 rounded-md flex items-center"}
+                  className={accountCreated ? "bg-green-600 py-4 px-6 rounded-md flex items-center" : "bg-red-600 py-4 px-6 rounded-md flex items-center"}
                   role="alert"
                 >
                   {message}
@@ -223,4 +246,4 @@ const Register = () => {
   )
 }
 
-export default Register
+export default Signup
