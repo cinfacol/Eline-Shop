@@ -11,7 +11,7 @@ const Signup = ({ loading }) => {
   const [accountCreated, setAccountCreated] = useState(false);
 
   const { message } = useSelector((state) => state.message);
-  
+
   const dispatch = useDispatch();
 
   useEffect(() => {

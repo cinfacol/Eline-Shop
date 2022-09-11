@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { setMessage } from '../message/messageSlice';
+// import { setMessage } from '../message/messageSlice';
 import authService from './services/auth.service';
 
 // Get user from localStorage
@@ -14,19 +14,24 @@ export const signup = createAsyncThunk(
 
       if (response.status === 201) {
         thunkAPI.dispatch(
-          setMessage('Tu cuenta se ha registrada exitosamente, revisa tu email para activarla')
+          // setMessage('Tu cuenta se ha registrada exitosamente, revisa tu email para activarla')
         );
         return response.data;
       } else {
         thunkAPI.dispatch(
-          setMessage('No fue posible registrar tu cuenta')
+          // setMessage('No fue posible registrar tu cuenta')
         );
       }
     } catch (error) {
-      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-      thunkAPI.dispatch(setMessage(message));
+      // const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      // thunkAPI.dispatch(setMessage(message));
+      thunkAPI.dispatch();
+      console.log('error_response', error.response);
+      console.log('error_response_data', error.response.data);
+      console.log('error_response_data_message', error.response.data.message);
+      console.log('error_response_data_email', error.response.data.email);
 
-      return thunkAPI.rejectWithValue();
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -40,18 +45,19 @@ export const activate = createAsyncThunk(
 
       if (response.status === 204) {
         thunkAPI.dispatch(
-          setMessage('Tu cuenta ha sido activada exitosamente')
+          // setMessage('Tu cuenta ha sido activada exitosamente')
         );
         thunkAPI.getState();
         return response.data;
       } else {
         thunkAPI.dispatch(
-          setMessage('Error activando cuenta')
+          // setMessage('Error activando tu cuenta')
         );
       }
     } catch (error) {
-      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-      thunkAPI.dispatch(setMessage(message));
+      // const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      // thunkAPI.dispatch(setMessage(message));
+      thunkAPI.dispatch();
 
       return thunkAPI.rejectWithValue();
     }
@@ -78,7 +84,7 @@ export const logout = createAsyncThunk('auth/logout', async () => {
 const initialState = {
   access: localStorage.getItem('access'),
   refresh: localStorage.getItem('refresh'),
-  isAuthenticated: null,
+  isActivated: false,
   user: user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null },
   status: 'idle',
   error: false
@@ -116,8 +122,8 @@ const authSlice = createSlice({
       })
       .addCase(activate.fulfilled, (state, action) => {
         if (state.status === 'pending') {
-          state.status = 'idle'
-          state.isLoggedIn = false;
+          state.status = 'idle';
+          state.isActivated = true;
         }
       })
       .addCase(activate.rejected, (state, action) => {
@@ -125,6 +131,7 @@ const authSlice = createSlice({
           state.status = 'idle'
           state.error = action.error
           state.isLoggedIn = false;
+          state.isActivated = false;
         }
       })
   },
