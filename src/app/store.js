@@ -1,13 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
-import AlertSlice from '../features/alert/alertSlice';
-// import messageReducer from '../features/message/messageSlice';
+import { NotificationReducer } from '../features/notifications/notificationSlice';
 
 const reducer = {
   auth: authReducer,
-  activate: authReducer,
-  alert: AlertSlice.reducer,
-  // message: messageReducer
+  // activate: authReducer,
+  notification: NotificationReducer
 }
 
 const store = configureStore({

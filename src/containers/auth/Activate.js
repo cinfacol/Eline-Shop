@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import { useEffect } from 'react';
 import { Navigate } from 'react-router';
 import { activate } from '../../features/auth/authSlice';
+import {useNotification} from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner';
 
 const Activate = ({
@@ -13,15 +14,13 @@ const Activate = ({
 
   const dispatch = useDispatch();
 
-  const accountActivated = useSelector(state => state.activate.isActivated);
+  const accountActivated = useSelector(state => state.auth.isActivated);
+  console.log('accountActivated', accountActivated);
+  const { displayNotification } = useNotification();
 
-  // const message = useSelector(state => state.message.message);
+  const estado = useSelector(state => state.auth.status); // 'idle' | 'pending' | 'fulfilled' |  'rejected'
+  console.log('estado', estado);
 
-  const activated = useSelector(state => state);
-
-  // const error = activated.activate.error.message;
-
-  const loading = activated.activate.status;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,20 +32,17 @@ const Activate = ({
       token = params.token
     } = activateValues
 
-    // setAccountActivated(false);
-
     dispatch(activate({ uid, token }))
       .unwrap()
       .then(() => {
-        // loading(false);
+        displayNotification({message: 'Tu cuenta se ha activado exitosamente, ya puedes logearte con tus credenciales', type: 'success'});
       })
       .catch(() => {
-        // accountActivated(false);
-        // accountStatus = 'idle';
+        displayNotification({ message: 'hubo un error al activar tu cuenta, posiblemente el enlace ya ha caducado, solicita uno nuevo', type: 'error', timeout: 15000 });
       });
   }
 
-  if (accountActivated && (loading !== 'pending'))
+  if (accountActivated && (estado !== 'pending'))
     return <Navigate to='/login' />;
 
   return (
@@ -56,7 +52,7 @@ const Activate = ({
         {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
         {!accountActivated && (
           <div className="max-w-3xl mx-auto">
-            {(loading === 'pending') ?
+            {(estado === 'pending') ?
               <button
                 className="inline-flex mt-12 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
