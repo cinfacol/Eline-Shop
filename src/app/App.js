@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from '../containers/Home';
 import Dashboard from '../containers/pages/Dashboard';
-import Login from '../containers/pages/Login';
+import Login from '../containers/auth/Login';
 import Signup from '../containers/auth/Signup';
 import Activate from '../containers/auth/Activate';
 import Error404 from '../containers/errors/Error404';
