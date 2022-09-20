@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from 'react-router';
 import { useEffect } from 'react';
 import { Navigate } from 'react-router';
-import { activate } from '../../features/auth/authSlice';
+import { activate } from '../../features/auth/services/auth.service';
 import {useNotification} from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner';
 
@@ -15,11 +15,11 @@ const Activate = ({
   const dispatch = useDispatch();
 
   const accountActivated = useSelector(state => state.auth.isActivated);
-  console.log('accountActivated', accountActivated);
+
   const { displayNotification } = useNotification();
 
   const estado = useSelector(state => state.auth.status); // 'idle' | 'pending' | 'fulfilled' |  'rejected'
-  console.log('estado', estado);
+  const err = useSelector(state => state.auth.error);
 
 
   useEffect(() => {
@@ -44,6 +44,10 @@ const Activate = ({
 
   if (accountActivated && (estado !== 'pending'))
     return <Navigate to='/login' />;
+  if (err.message === 'Rejected') {
+    return <Navigate to='/' />
+  }
+
 
   return (
     <Layout>
@@ -71,16 +75,6 @@ const Activate = ({
             }
           </div>
         )}
-        {/* {message && (
-          <div className="flex w-full justify-center shadow-sm rounded-md mt-4">
-            <div
-              className={(error !== "Rejected") ? "bg-green-600 py-4 px-6 rounded-md flex items-center" : "bg-red-600 py-4 px-6 rounded-md flex items-center"}
-              role="alert"
-            >
-              {message}
-            </div>
-          </div>
-        )} */}
       </div>
     </Layout>
   )

@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../features/auth/authSlice';
 import { Popover, Transition } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import {
@@ -87,6 +88,10 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+
+  const dispatch = useDispatch();
+
+  const loggedIn = useSelector(state => state.auth.user.isLoggedIn);
 
   const notifications = useSelector(state => state.notification.message);
 
@@ -299,15 +304,28 @@ export default function Navbar() {
                 </Popover>
               </Popover.Group>
               <div className="flex items-center md:ml-12">
-                <Link to='/login' className="text-base font-medium text-gray-500 hover:text-gray-900">
-                  Sign in
-                </Link>
-                <Link
-                  to="/signup"
-                  className="ml-8 inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                  Sign up
-                </Link>
+                {!loggedIn ?
+                  <>
+                    <Link to='/login' className="text-base font-medium text-gray-500 hover:text-gray-900">
+                      Sign in
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="ml-8 inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                    >
+                      Sign up
+                    </Link>
+                  </>
+                 :
+                  <Link to='/'
+                    className="text-base font-medium text-gray-500 hover:text-gray-900"
+                    onClick={() => dispatch(logout())}
+                  >
+                    Log out
+                  </Link>
+                }
+
+
               </div>
             </div>
           </div>
@@ -401,12 +419,15 @@ export default function Navbar() {
                   >
                     Sign up
                   </Link>
-                  <p className="mt-6 text-center text-base font-medium text-gray-500">
-                    Existing customer?{' '}
-                    <Link to='/login' className="text-indigo-600 hover:text-indigo-500">
-                      Sign in
-                    </Link>
-                  </p>
+                  {!loggedIn && (
+                    <p className="mt-6 text-center text-base font-medium text-gray-500">
+                      Existing customer?{' '}
+                      <Link to='/login' className="text-indigo-600 hover:text-indigo-500">
+                        Sign in
+                      </Link>
+                    </p>
+                  )}
+
                 </div>
               </div>
             </div>

@@ -1,49 +1,14 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authService from './services/auth.service';
-// import { toast } from 'react-toastify';
+import { createSlice } from '@reduxjs/toolkit';
+// import authService from './services/auth.service';
+import { signup, activate, login } from './services/auth.service';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
-
-// Signup user
-export const signup = createAsyncThunk(
-  'auth/signup',
-  async ({ first_name, last_name, email, password, re_password }, thunkAPI) => {
-
-    try {
-
-      const response = await authService.signup(first_name, last_name, email, password, re_password);
-
-      if (response.status === 201) {
-        return response.data;
-      } else {
-        return response.data
-      }
-    } catch (error) {
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
-
-// Activate user
-export const activate = createAsyncThunk(
-  'auth/activate',
-  async ({ uid, token }, thunkAPI) => {
-    try {
-      const response = await authService.activate(uid, token);
-
-      if (response.status === 204) {
-        thunkAPI.getState();
-        return response.data;
-      }
-    } catch (error) {
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
+/* const access = localStorage.getItem('access');
+const refresh = localStorage.getItem('refresh'); */
 
 // Login user
-export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
+/* export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   try {
     return await authService.login(user)
   } catch (error) {
@@ -53,11 +18,11 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
       error.toString()
     return thunkAPI.rejectWithValue(message)
   }
-})
+}) */
 
-export const logout = createAsyncThunk('auth/logout', async () => {
+/* export const logout = createAsyncThunk('auth/logout', async () => {
   authService.logout()
-})
+}) */
 
 const initialState = {
   access: localStorage.getItem('access'),
@@ -72,7 +37,18 @@ const initialState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      // localStorage.removeItem('user') // delete user from storage
+      state.access = '';
+      state.refresh = '';
+      localStorage.removeItem('access', state.access);
+      localStorage.removeItem('refresh', state.refresh);
+      state.user.isLoggedIn = false;
+      state.status = 'idle';
+      state.error = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signup.pending, (state) => {
@@ -112,8 +88,30 @@ const authSlice = createSlice({
           state.isActivated = false;
         }
       })
+      .addCase(login.pending, (state) => {
+        if (state.status === 'idle') {
+          state.status = 'pending';
+        }
+      })
+      .addCase(login.fulfilled, (state) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.user.isLoggedIn = true;
+          state.access = localStorage.getItem('access');
+          state.refresh = localStorage.getItem('refresh');
+
+        }
+      })
+      .addCase(login.rejected, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle'
+          state.error = action.error
+          state.isLoggedIn = false;
+        }
+      })
   },
 })
 
+export const { logout } = authSlice.actions
 const { reducer } = authSlice;
 export default reducer;

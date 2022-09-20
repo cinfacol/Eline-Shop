@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { signup } from '../../features/auth/authSlice';
+import { signup } from '../../features/auth/services/auth.service';
 import {useNotification} from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner'
 
@@ -80,7 +80,6 @@ const Signup = ({ status }) => {
     dispatch(signup({ first_name, last_name, email, password, re_password }))
       .unwrap()
       .then(() => {
-        console.log('handleSignup', formValue);
         displayNotification({message: 'Tu cuenta se ha registrado exitosamente, revisa tu email para activarla', type: 'success'});
       })
       .catch((error) => {
@@ -225,15 +224,6 @@ const Signup = ({ status }) => {
                 )}
               </Form>
             </Formik>
-
-            {/* {alert && (
-              <div
-                className={accountCreated ? 'bg-green-600 py-4 px-6 rounded-md flex items-center' : 'bg-red-600 py-4 px-6 rounded-md flex items-center'}
-                role='alert'
-              >
-                {alert}
-              </div>
-            )} */}
           </div>
         </div>
       </div>
