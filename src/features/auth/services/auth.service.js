@@ -1,9 +1,5 @@
-import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-
-const API_SIGNUP_URL = `${process.env.REACT_APP_API_URL}/auth/users/`;
-const API_ACTIVATE_URL = `${process.env.REACT_APP_API_URL}/auth/users/activation/`;
-const API_LOGIN_URL = `${process.env.REACT_APP_API_URL}/auth/jwt/create/`;
+import { authApi } from './authApi';
 
 export const signup = createAsyncThunk(
   'auth/signup',
@@ -14,7 +10,7 @@ export const signup = createAsyncThunk(
           'Content-Type': 'application/json'
         }
       };
-      const response = await axios.post(API_SIGNUP_URL, {first_name, last_name, email, password, re_password}, config);
+      const response = await authApi.post(`/auth/users/`, {first_name, last_name, email, password, re_password}, config);
 
       if (response.status === 201) {
         return response.data;
@@ -41,7 +37,7 @@ export const activate = createAsyncThunk(
           'Content-Type': 'application/json'
         }
       };
-      const response = await axios.post(API_ACTIVATE_URL, { uid, token }, config);
+      const response = await authApi.post(`/auth/users/activation/`, { uid, token }, config);
 
       if (response.status === 204) {
         // thunkAPI.getState();
@@ -64,7 +60,7 @@ export const login = createAsyncThunk(
           'Content-Type': 'application/json'
         }
       };
-      const response = await axios.post(API_LOGIN_URL, { email, password }, config);
+      const response = await authApi.post(`/auth/jwt/create/`, { email, password }, config);
 
       if (response.status === 200) {
         localStorage.setItem('access', response.data.access);
