@@ -48,7 +48,6 @@ const Activate = ({
     return <Navigate to='/' />
   }
 
-
   return (
     <Layout>
 

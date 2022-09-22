@@ -1,11 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 // import authService from './services/auth.service';
-import { signup, activate, login } from './services/auth.service';
+import { signup, activate, login, loadUser, refresh, refrescar } from './services/auth.service';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
-/* const access = localStorage.getItem('access');
-const refresh = localStorage.getItem('refresh'); */
 
 const initialState = {
   access: localStorage.getItem('access'),
@@ -22,12 +20,14 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      // localStorage.removeItem('user') // delete user from storage
       state.access = '';
       state.refresh = '';
-      localStorage.removeItem('access', state.access);
-      localStorage.removeItem('refresh', state.refresh);
+      state.user.user = null;
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('user');
       state.user.isLoggedIn = false;
+      state.isActivated = false;
       state.status = 'idle';
       state.error = [];
     },
@@ -87,9 +87,45 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         if (state.status === 'pending') {
-          state.status = 'idle'
-          state.error = action.error
-          state.isLoggedIn = false;
+          state.status = 'idle';
+          state.error = action.error;
+          state.user.isLoggedIn = false;
+        }
+      })
+      .addCase(loadUser.pending, (state) => {
+        if (state.status === 'idle') {
+          state.status = 'pending';
+        }
+      })
+      .addCase(loadUser.fulfilled, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.user.user = action.payload;
+        }
+      })
+      .addCase(loadUser.rejected, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.error = action.error;
+          state.user.user = {};
+        }
+      })
+      .addCase(refrescar.pending, (state) => {
+        if (state.status === 'idle') {
+          state.status = 'pending';
+        }
+      })
+      .addCase(refrescar.fulfilled, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.access = action.payload;
+        }
+      })
+      .addCase(refrescar.rejected, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.error = action.error;
+          state.user.user = {};
         }
       })
   },

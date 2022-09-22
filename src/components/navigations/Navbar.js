@@ -1,7 +1,7 @@
-import { Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
-import { Popover, Transition } from '@headlessui/react';
+import { Menu, Popover, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import {
   BookmarkAltIcon,
@@ -22,7 +22,7 @@ import {
   ViewGridIcon,
   XIcon,
 } from '@heroicons/react/outline';
-import { ChevronDownIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, ShoppingCartIcon } from '@heroicons/react/solid';
 import { Notification } from '../../containers/pages/notification';
 
 const solutions = [
@@ -91,9 +91,97 @@ export default function Navbar() {
 
   const dispatch = useDispatch();
 
-  const loggedIn = useSelector(state => state.auth.user.isLoggedIn);
+  //const loggedIn = useSelector(state => state.auth.user.isLoggedIn);
+
+  const { isLoggedIn, user = {} } = useSelector(state => state.auth.user);
 
   const notifications = useSelector(state => state.notification.message);
+
+  const logoutHandler = () => {
+    dispatch(logout())
+  }
+
+  const authLinks = (
+    <Menu as="div" className="relative inline-block text-left">
+      <div>
+        <Menu.Button className="inline-flex justify-center w-full rounded-full  text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+          <span className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
+            <img
+              className="h-full w-full rounded-full"
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+              alt=""
+            />
+          </span>
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="py-1">
+            <Menu.Item>
+              {({ active }) => (
+                <Link
+                  to="/dashboard"
+                  className={classNames(
+                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                    'block px-4 py-2 text-sm'
+                  )}
+                >
+                  Dashboard
+                </Link>
+              )}
+            </Menu.Item>
+            <form method="POST">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    onClick={logoutHandler}
+                    className={classNames(
+                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      'block w-full text-left px-4 py-2 text-sm'
+                    )}
+                  >
+                    Log out
+                  </button>
+                )}
+              </Menu.Item>
+            </form>
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  )
+
+  const guestLinks = (
+    <Fragment>
+      <div>
+        <div className="inline-flex justify-center w-full rounded-full  text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+          <span className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
+            <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </span>
+        </div>
+      </div>
+      <Link to="/login" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Login
+      </Link>
+      <Link
+        to="/signup"
+        className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
+      >
+        Sign up
+      </Link>
+    </Fragment>
+  )
 
   return (
     <>
@@ -304,28 +392,14 @@ export default function Navbar() {
                 </Popover>
               </Popover.Group>
               <div className="flex items-center md:ml-12">
-                {!loggedIn ?
-                  <>
-                    <Link to='/login' className="text-base font-medium text-gray-500 hover:text-gray-900">
-                      Sign in
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="ml-8 inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                      Sign up
-                    </Link>
-                  </>
-                 :
-                  <Link to='/'
-                    className="text-base font-medium text-gray-500 hover:text-gray-900"
-                    onClick={() => dispatch(logout())}
-                  >
-                    Log out
-                  </Link>
-                }
-
-
+                <div className='flex items-center md:mr-6 md:justify-between md:space-x-5'>
+                  <div>{user && user.first_name}</div>
+                  {isLoggedIn ? authLinks : guestLinks }
+                </div>
+                <Link to="/">
+                  <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 mr-6 mr-4" />
+                  <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{2}</span>
+                </Link>
               </div>
             </div>
           </div>
@@ -419,7 +493,7 @@ export default function Navbar() {
                   >
                     Sign up
                   </Link>
-                  {!loggedIn && (
+                  {!isLoggedIn && (
                     <p className="mt-6 text-center text-base font-medium text-gray-500">
                       Existing customer?{' '}
                       <Link to='/login' className="text-indigo-600 hover:text-indigo-500">
@@ -427,7 +501,6 @@ export default function Navbar() {
                       </Link>
                     </p>
                   )}
-
                 </div>
               </div>
             </div>

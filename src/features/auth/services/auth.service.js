@@ -66,12 +66,12 @@ export const login = createAsyncThunk(
         localStorage.setItem('access', response.data.access);
         localStorage.setItem('refresh', response.data.refresh);
 
-        return (response.data);
+        return response.data;
 
       }
     } catch (error) {
       if (error.response) {
-        console.log('catch_error_response_data_detail', error.response.data.detail);
+        // console.log('catch_error_response_data_detail', error.response.data.detail);
         return thunkAPI.rejectWithValue(error.response.data.detail);
       } else {
         return thunkAPI.rejectWithValue(error.message);
@@ -79,3 +79,66 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const loadUser = createAsyncThunk(
+  'auth/load_user',
+  async (arg, thunkAPI ) => {
+
+    if (localStorage.getItem('access')) {
+
+      const config = {
+        headers: {
+          'Authorization': `JWT ${localStorage.getItem('access')}`,
+          'Accept': 'application/json'
+        }
+      };
+      try {
+        const response = await authApi.get(`/auth/users/me/`, config);
+        if (response.status === 200) {
+          localStorage.setItem('user', JSON.stringify(response.data));
+          return response.data; // action.payload
+        }
+      } catch (error) {
+        if (error.response && error.response.data.message) {
+          return thunkAPI.rejectWithValue(error.response.data.message)
+        } else {
+          return thunkAPI.rejectWithValue(error.message)
+        }
+      }
+    }
+
+  }
+)
+
+export const refrescar = createAsyncThunk(
+  'auth/refresh',
+  async (arg, thunkAPI) => {
+
+    if (localStorage.getItem('refresh')) {
+
+      const config = {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      };
+      const body = JSON.stringify({
+        refresh: localStorage.getItem('refresh')
+      });
+
+      try {
+        const response = await authApi.post(`/auth/jwt/refresh/`, body, config);
+
+        if (response.status === 200) {
+          return response.data
+        }
+      } catch (error) {
+        if (error.response && error.response.data.message) {
+          return thunkAPI.rejectWithValue(error.response.data.message)
+        } else {
+          return thunkAPI.rejectWithValue(error.message)
+        }
+      }
+    }
+  }
+)

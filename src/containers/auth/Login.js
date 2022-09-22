@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { login } from '../../features/auth/services/auth.service';
+import { login, loadUser, refrescar } from '../../features/auth/services/auth.service';
 import { useNotification } from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner';
 
@@ -53,6 +53,7 @@ const Login = ({ status }) => {
     dispatch(login({ email, password }))
       .unwrap()
       .then(() => {
+        dispatch(loadUser());
         displayNotification({message: 'Credenciales de autenticación correctas', type: 'success'});
       })
       .catch((error) => {
@@ -67,15 +68,17 @@ const Login = ({ status }) => {
     <Layout>
       <div className='min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
         <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-          <svg className='mx-auto w-12 h-12 text-gray-400' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path fillRule='evenodd' d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z' clipRule='evenodd'></path></svg>
+          <svg className='mx-auto w-12 h-12 text-gray-400' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
+            <path fillRule='evenodd' d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z' clipRule='evenodd'></path>
+          </svg>
           <div className='sm:mx-auto sm:w-full sm:max-w-md'>
             <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>Autentícate</h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Regístrate
-            </Link>
-          </p>
+              Or{' '}
+              <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Regístrate
+              </Link>
+            </p>
           </div>
         </div>
         <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
