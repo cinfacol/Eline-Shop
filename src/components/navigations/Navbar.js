@@ -1,8 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
+import { useState, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
 import { Menu, Popover, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import {
   BookmarkAltIcon,
   BriefcaseIcon,
@@ -91,15 +93,30 @@ export default function Navbar() {
 
   const dispatch = useDispatch();
 
-  //const loggedIn = useSelector(state => state.auth.user.isLoggedIn);
-
   const { isLoggedIn, user = {} } = useSelector(state => state.auth.user);
+
+  const [redirect, setRedirect] = useState(false);
 
   const notifications = useSelector(state => state.notification.message);
 
-  const logoutHandler = () => {
-    dispatch(logout())
-  }
+  /* const logoutHandler = () => {
+    setRedirect(true);
+    dispatch(logout());
+    window.location.reload(false);
+    return <Navigate to='/' />;
+  } */
+
+  const logoutHandler = useCallback(() => {
+    dispatch(logout());
+    setRedirect(true);
+  }, [dispatch]);
+
+  /* if (redirect) {
+    setRedirect(false);
+    console.log('redirect_if', redirect);
+    window.location.reload(false);
+    return <Navigate to='/' />;
+  } */
 
   const authLinks = (
     <Menu as="div" className="relative inline-block text-left">
@@ -185,6 +202,7 @@ export default function Navbar() {
 
   return (
     <>
+      {redirect ? <Navigate to='/' /> : null};
       <Popover className="relative bg-white">
         <div className="absolute inset-0 shadow z-30 pointer-events-none" aria-hidden="true" />
         <div className="relative z-20">

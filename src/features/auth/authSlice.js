@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 // import authService from './services/auth.service';
-import { signup, activate, login, loadUser, refresh, refrescar } from './services/auth.service';
+import { signup, activate, login, loadUser, refrescar } from './services/auth.service';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -20,12 +20,12 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      state.access = '';
-      state.refresh = '';
-      state.user.user = null;
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
       localStorage.removeItem('user');
+      state.access = null;
+      state.refresh = null;
+      state.user.user = null;
       state.user.isLoggedIn = false;
       state.isActivated = false;
       state.status = 'idle';
