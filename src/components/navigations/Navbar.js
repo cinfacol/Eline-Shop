@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
 import { Menu, Popover, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import {
   BookmarkAltIcon,
@@ -26,6 +26,7 @@ import {
 } from '@heroicons/react/outline';
 import { ChevronDownIcon, ShoppingCartIcon } from '@heroicons/react/solid';
 import { Notification } from '../../containers/pages/notification';
+import { useNotification } from '../../hooks/useNotification';
 
 const solutions = [
   {
@@ -98,6 +99,9 @@ export default function Navbar() {
   const [redirect, setRedirect] = useState(false);
 
   const notifications = useSelector(state => state.notification.message);
+  const { displayNotification } = useNotification();
+
+  let location = useLocation();
 
   /* const logoutHandler = () => {
     setRedirect(true);
@@ -109,7 +113,8 @@ export default function Navbar() {
   const logoutHandler = useCallback(() => {
     dispatch(logout());
     setRedirect(true);
-  }, [dispatch]);
+    displayNotification({message: 'Sesión cerrada correctamente', type: 'success'});
+  }, [dispatch, displayNotification]);
 
   /* if (redirect) {
     setRedirect(false);
@@ -200,9 +205,11 @@ export default function Navbar() {
     </Fragment>
   )
 
-  return (
+    return (
     <>
-      {redirect ? <Navigate to='/' /> : null};
+      {
+        (location.pathname !== '/') && (redirect ? <Navigate to='/' /> : null)
+      }
       <Popover className="relative bg-white">
         <div className="absolute inset-0 shadow z-30 pointer-events-none" aria-hidden="true" />
         <div className="relative z-20">
