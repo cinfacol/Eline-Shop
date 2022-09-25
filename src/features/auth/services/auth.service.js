@@ -142,3 +142,50 @@ export const refrescar = createAsyncThunk(
     }
   }
 )
+
+export const reset_password = createAsyncThunk(
+  'auth/reset_password',
+  async ({ email, }, thunkAPI) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    try {
+      const response = await authApi.post(`/auth/users/reset_password/`, { email, }, config);
+
+      if (response.status === 204) {
+          return response.data
+        }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return thunkAPI.rejectWithValue(error.response.data.message)
+      } else {
+        return thunkAPI.rejectWithValue(error.message)
+      }
+    }
+  }
+)
+export const reset_password_confirm = createAsyncThunk(
+  'auth/reset_password_confirm',
+  async ({ uid, token, new_password, re_new_password, }, thunkAPI) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    try {
+      const response = await authApi.post(`/auth/users/reset_password_confirm/`, { uid, token, new_password, re_new_password, }, config);
+      if (response.status === 204) {
+          return response.data
+        }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return thunkAPI.rejectWithValue(error.response.data.message)
+      } else {
+        return thunkAPI.rejectWithValue(error.message)
+      }
+    }
+  }
+)

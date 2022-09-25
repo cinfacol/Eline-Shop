@@ -1,6 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 // import authService from './services/auth.service';
-import { signup, activate, login, loadUser, refrescar } from './services/auth.service';
+import {
+  signup,
+  activate,
+  login,
+  loadUser,
+  refrescar,
+  reset_password,
+  reset_password_confirm
+} from './services/auth.service';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -10,6 +18,7 @@ const initialState = {
   refresh: localStorage.getItem('refresh'),
   isAccountCreated: false,
   isActivated: false,
+  isPasswordReset: false,
   user: user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null },
   status: 'idle',
   error: []
@@ -126,6 +135,40 @@ const authSlice = createSlice({
           state.status = 'idle';
           state.error = action.error;
           state.user.user = {};
+        }
+      })
+      .addCase(reset_password.pending, (state) => {
+        if (state.status === 'idle') {
+          state.status = 'pending';
+        }
+      })
+      .addCase(reset_password.fulfilled, (state) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+        }
+      })
+      .addCase(reset_password.rejected, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.error = action.error;
+        }
+      })
+      .addCase(reset_password_confirm.pending, (state) => {
+        if (state.status === 'idle') {
+          state.status = 'pending';
+        }
+      })
+      .addCase(reset_password_confirm.fulfilled, (state) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.isPasswordReset = true;
+        }
+      })
+      .addCase(reset_password_confirm.rejected, (state, action) => {
+        if (state.status === 'pending') {
+          state.status = 'idle';
+          state.error = action.error;
+          state.isPasswordReset = false;
         }
       })
   },

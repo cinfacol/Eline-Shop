@@ -103,25 +103,11 @@ export default function Navbar() {
 
   let location = useLocation();
 
-  /* const logoutHandler = () => {
-    setRedirect(true);
-    dispatch(logout());
-    window.location.reload(false);
-    return <Navigate to='/' />;
-  } */
-
   const logoutHandler = useCallback(() => {
     dispatch(logout());
     setRedirect(true);
     displayNotification({message: 'Sesión cerrada correctamente', type: 'success'});
   }, [dispatch, displayNotification]);
-
-  /* if (redirect) {
-    setRedirect(false);
-    console.log('redirect_if', redirect);
-    window.location.reload(false);
-    return <Navigate to='/' />;
-  } */
 
   const authLinks = (
     <Menu as="div" className="relative inline-block text-left">
@@ -205,7 +191,7 @@ export default function Navbar() {
     </Fragment>
   )
 
-    return (
+  return (
     <>
       {
         (location.pathname !== '/') && (redirect ? <Navigate to='/' /> : null)

@@ -1,78 +1,77 @@
 import Layout from '../../hocs/Layout';
-import { Link, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { Navigate } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { login, loadUser } from '../../features/auth/services/auth.service';
+import { reset_password_confirm } from '../../features/auth/services/auth.service';
 import { useNotification } from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner';
 
-const Login = ({ status }) => {
+const ResetPasswordConfirm = () => {
 
   const dispatch = useDispatch();
 
-  const loggedIn = useSelector(state => state.auth.user.isLoggedIn);
+  const params = useParams(); // uid, token
+
+  const passwordReset = useSelector(state => state.auth.isPasswordReset);
 
   const { displayNotification } = useNotification();
 
   const loading = useSelector(state => state.auth.status);
 
   const initialValues = {
-    email: '',
-    password: '',
+    new_password: '',
+    re_new_password: '',
   };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email('This is not a valid email.')
-      .required('This field is required!'),
-    password: Yup.string()
+    new_password: Yup.string()
       .test(
         'len',
-        'The password must be between 6 and 40 characters.',
+        'The new_password must be between 6 and 40 characters.',
         (val) =>
           val &&
           val.toString().length >= 6 &&
           val.toString().length <= 40
       )
       .required('This field is required!'),
+    re_new_password: Yup.string()
+      .required()
+      .oneOf([Yup.ref('new_password'), null], 'Passwords must match'),
   });
 
-  const handleLogin = (formValue) => {
+  const handleResetPasswordConfirm = (formValue) => {
+    const uid = params.uid;
+    const token = params.token;
     const {
-      email,
-      password
+      new_password,
+      re_new_password
     } = formValue;
 
-    dispatch(login({ email, password }))
+    dispatch(reset_password_confirm({ uid, token, new_password, re_new_password }))
       .unwrap()
       .then(() => {
-        dispatch(loadUser());
-        displayNotification({message: 'Credenciales de autenticación correctas', type: 'success'});
+        displayNotification({message: 'La contraseña se ha restablecido correctamente', type: 'success'});
         window.scrollTo(0, 0);
       })
       .catch((error) => {
-        displayNotification({ message: 'hubo un error al autenticar tu cuenta, las credeciales no coinciden', type: 'error' });
+        displayNotification({ message: 'Error al resetear tu contraseña', type: 'error' });
       });
   };
+  console.log('password_reset', passwordReset);
 
   return (
     <Layout>
       {
-        loggedIn ? <Navigate to='/' /> :
+        passwordReset ? <Navigate to='/login' /> :
         <div className='min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
           <div className='sm:mx-auto sm:w-full sm:max-w-md'>
             <svg className='mx-auto w-12 h-12 text-gray-400' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
               <path fillRule='evenodd' d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z' clipRule='evenodd'></path>
             </svg>
             <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-              <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>Autentícate</h2>
-              <p className="mt-2 text-center text-sm text-gray-600">
-                Or{' '}
-                <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Regístrate
-                </Link>
-              </p>
+              <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>Nueva Contraseña</h2>
             </div>
           </div>
           <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
@@ -80,23 +79,23 @@ const Login = ({ status }) => {
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={handleLogin}
+                onSubmit={handleResetPasswordConfirm}
               >
                 <Form>
                   <div>
                     <div className='mt-5'>
-                      <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
-                        Email
+                      <label htmlFor='new_password' className='block text-sm font-medium text-gray-700'>
+                        Contraseña
                       </label>
                       <div className='mt-1'>
                         <Field
-                          name='email'
-                          type='email'
+                          name='new_password'
+                          type='password'
                           className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                          placeholder='Ingrese su Correo Electrónico'
+                          placeholder='Ingrese su nueva Contraseña'
                         />
                         <ErrorMessage
-                          name='email'
+                          name='new_password'
                           component='div'
                           className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
                         />
@@ -104,18 +103,18 @@ const Login = ({ status }) => {
                     </div>
 
                     <div className='mt-5'>
-                      <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
-                        Contraseña
+                      <label htmlFor='re_new_password' className='block text-sm font-medium text-gray-700'>
+                        Confirmar Contraseña
                       </label>
                       <div className='mt-1'>
                         <Field
-                          name='password'
+                          name='re_new_password'
                           type='password'
                           className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                          placeholder='Ingrese su Contraseña'
+                          placeholder='Repita la contraseña'
                         />
                         <ErrorMessage
-                          name='password'
+                          name='re_new_password'
                           component='div'
                           className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
                         />
@@ -124,7 +123,7 @@ const Login = ({ status }) => {
                     <div className='mt-5'>
                       {(loading === 'pending') ?
                         <button
-                        type='submit'
+                        type='button'
                           className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                         >
                           <Oval
@@ -137,14 +136,9 @@ const Login = ({ status }) => {
                           type='submit'
                           className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                         >
-                          Log In
+                          Reset Password
                         </button>
                       }
-                    </div>
-                    <div className="text-sm mt-4">
-                      <Link to="/reset_password" className="font-medium text-indigo-600 hover:text-indigo-500">
-                        ¿Olvidaste tu contraseña?
-                      </Link>
                     </div>
                   </div>
                 </Form>
@@ -157,4 +151,4 @@ const Login = ({ status }) => {
   )
 }
 
-export default Login;
+export default ResetPasswordConfirm;
