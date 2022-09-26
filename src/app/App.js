@@ -16,12 +16,14 @@ function App() {
         <Route path="*" element={<Error404 />} />
 
         <Route exact path='/' element={<Home />} />
-        <Route exact path='/dashboard' element={<Dashboard />} />
-        <Route exact path='/login' element={<Login />} />
+
         <Route exact path='/signup' element={<Signup />} />
+        <Route exact path='/login' element={<Login />} />
         <Route exact path='/activate/:uid/:token' element={<Activate />} />
         <Route exact path='/reset_password' element={<ResetPassword />} />
         <Route exact path='/password/reset/confirm/:uid/:token' element={<ResetPasswordConfirm />} />
+
+        <Route exact path='/dashboard' element={<Dashboard />} />
       </Routes>
     </Router>
   );

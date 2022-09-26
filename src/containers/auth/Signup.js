@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { signup } from '../../features/auth/services/auth.service';
+import { signup } from '../../features/services/auth/auth.service';
 import {useNotification} from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner'
 

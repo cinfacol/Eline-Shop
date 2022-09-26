@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { login, loadUser } from '../../features/auth/services/auth.service';
+import { login, loadUser } from '../../features/services/auth/auth.service';
 import { useNotification } from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner';
 
@@ -124,7 +124,7 @@ const Login = ({ status }) => {
                     <div className='mt-5'>
                       {(loading === 'pending') ?
                         <button
-                        type='submit'
+                        type='button'
                           className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                         >
                           <Oval

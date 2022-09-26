@@ -1,10 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useCallback } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
+import { get_categories } from '../../features/services/categories/categories.service';
 import { Menu, Popover, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import {
   BookmarkAltIcon,
   BriefcaseIcon,
@@ -102,6 +101,12 @@ export default function Navbar() {
   const { displayNotification } = useNotification();
 
   let location = useLocation();
+
+   useEffect(() => {
+    get_categories()
+  }, [])
+
+  dispatch(get_categories());
 
   const logoutHandler = useCallback(() => {
     dispatch(logout());

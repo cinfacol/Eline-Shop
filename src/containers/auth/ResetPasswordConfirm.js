@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { reset_password_confirm } from '../../features/auth/services/auth.service';
+import { reset_password_confirm } from '../../features/services/auth/auth.service';
 import { useNotification } from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner';
 

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from 'react-router';
 import { useEffect } from 'react';
 import { Navigate } from 'react-router';
-import { activate } from '../../features/auth/services/auth.service';
+import { activate } from '../../features/services/auth/auth.service';
 import {useNotification} from '../../hooks/useNotification';
 import { Oval } from 'react-loader-spinner';
 

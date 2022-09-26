@@ -1,7 +1,8 @@
-from pathlib import Path
 import os
-import environ
 from datetime import timedelta
+from pathlib import Path
+
+import environ
 
 env = environ.Env()
 environ.Env.read_env()
@@ -37,7 +38,9 @@ DJANGO_APPS = [
 PROJECT_APPS = [
     'apps.user.apps.UserConfig',
 ]
-ECOMMERCE_APPS = []
+ECOMMERCE_APPS = [
+    'apps.category.apps.CategoryConfig',
+]
 THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',

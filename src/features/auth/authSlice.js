@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-// import authService from './services/auth.service';
 import {
   signup,
   activate,
@@ -8,7 +7,7 @@ import {
   refrescar,
   reset_password,
   reset_password_confirm
-} from './services/auth.service';
+} from '../services/auth/auth.service';
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem('user'));
@@ -19,6 +18,7 @@ const initialState = {
   isAccountCreated: false,
   isActivated: false,
   isPasswordReset: false,
+  isPasswordResetSend: false,
   user: user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null },
   status: 'idle',
   error: []
@@ -37,6 +37,8 @@ const authSlice = createSlice({
       state.user.user = null;
       state.user.isLoggedIn = false;
       state.isActivated = false;
+      state.isPasswordReset = false;
+      state.isPasswordResetSend = false;
       state.status = 'idle';
       state.error = [];
     },
@@ -145,12 +147,14 @@ const authSlice = createSlice({
       .addCase(reset_password.fulfilled, (state) => {
         if (state.status === 'pending') {
           state.status = 'idle';
+          state.isPasswordResetSend = true;
         }
       })
       .addCase(reset_password.rejected, (state, action) => {
         if (state.status === 'pending') {
           state.status = 'idle';
           state.error = action.error;
+          state.isPasswordResetSend = false;
         }
       })
       .addCase(reset_password_confirm.pending, (state) => {
