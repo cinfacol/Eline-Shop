@@ -23,9 +23,10 @@ export const categoriesSlice = createSlice({
         state.categories = action.payload.categories;
       }
     })
-    .addCase(get_categories.rejected, (state) => {
+    .addCase(get_categories.rejected, (state, action) => {
       if (state.status === 'pending') {
         state.status = 'idle';
+        state.error = action.error.message
       }
     })
   }

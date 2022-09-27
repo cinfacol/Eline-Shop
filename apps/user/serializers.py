@@ -15,4 +15,6 @@ class UserCreateSerializer(UserCreateSerializer):
             'last_name',
             'get_full_name',
             'get_short_name',
+            'created',
+            'updated',
         )
