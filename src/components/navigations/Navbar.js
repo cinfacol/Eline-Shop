@@ -2,31 +2,23 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Fragment, useState, useEffect, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
 import { get_categories } from '../../features/services/categories/categories.service';
+// import { get_products } from '../../features/services/products/products.service';
 import { Menu, Popover, Transition } from '@headlessui/react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import {
-  BookmarkAltIcon,
-  BriefcaseIcon,
   ChartBarIcon,
   CheckCircleIcon,
   CursorClickIcon,
-  DesktopComputerIcon,
-  GlobeAltIcon,
-  InformationCircleIcon,
   MenuIcon,
-  NewspaperIcon,
-  OfficeBuildingIcon,
   PhoneIcon,
   PlayIcon,
   ShieldCheckIcon,
-  UserGroupIcon,
   ViewGridIcon,
   XIcon,
 } from '@heroicons/react/outline';
 import { ChevronDownIcon, ShoppingCartIcon } from '@heroicons/react/solid';
 import { Notification } from '../../containers/pages/notification';
 import { useNotification } from '../../hooks/useNotification';
-// import { ActionTypes } from '@mui/base';
 
 const solutions = [
   {
@@ -53,19 +45,6 @@ const callsToAction = [
   { name: 'Watch Demo', href: '#', icon: PlayIcon },
   { name: 'View All Products', href: '#', icon: CheckCircleIcon },
   { name: 'Contact Sales', href: '#', icon: PhoneIcon },
-]
-const company = [
-  { name: 'About', href: '#', icon: InformationCircleIcon },
-  { name: 'Customers', href: '#', icon: OfficeBuildingIcon },
-  { name: 'Press', href: '#', icon: NewspaperIcon },
-  { name: 'Careers', href: '#', icon: BriefcaseIcon },
-  { name: 'Privacy', href: '#', icon: ShieldCheckIcon },
-]
-const resources = [
-  { name: 'Community', href: '#', icon: UserGroupIcon },
-  { name: 'Partners', href: '#', icon: GlobeAltIcon },
-  { name: 'Guides', href: '#', icon: BookmarkAltIcon },
-  { name: 'Webinars', href: '#', icon: DesktopComputerIcon },
 ]
 const blogPosts = [
   {
@@ -94,6 +73,12 @@ export default function Navbar() {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(get_categories());
+    // dispatch(get_products());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const { isLoggedIn, user = {} } = useSelector(state => state.auth.user);
 
   const [redirect, setRedirect] = useState(false);
@@ -101,13 +86,16 @@ export default function Navbar() {
   const notifications = useSelector(state => state.notification.message);
   const { displayNotification } = useNotification();
 
+  const categorias = useSelector(state => state.categories.categories);
+  // const products = useSelector(state => state.products.products);
+
   let location = useLocation();
 
-  useEffect(() => {
+  /* useEffect(() => {
     dispatch(get_categories());
-  }, [dispatch])
-
-  const categorias = useSelector(state => state.categories.categories);
+    dispatch(get_products());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) */
 
   const logoutHandler = useCallback(() => {
     dispatch(logout());
@@ -231,6 +219,13 @@ export default function Navbar() {
 
   return (
     <>
+      {/* <div>
+        {products && (products.map((product) => (
+          <div key={product.id}>
+            <p className="text-base font-medium text-gray-900">{product.name}</p>
+          </div>
+        )))}
+      </div> */}
       {
         (location.pathname !== '/') && (redirect ? <Navigate to='/' /> : null)
       }
@@ -276,7 +271,7 @@ export default function Navbar() {
               </Popover.Button>
             </div>
 
-            {/* div oculto par moviles Menu principal (Solutions, Pricing, Docs, Categories) */}
+            {/* div oculto para moviles Menu principal (Solutions, shop, Docs, Categories) */}
             <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
               <Popover.Group as="nav" className="flex space-x-10">
                 <Popover>
@@ -354,8 +349,8 @@ export default function Navbar() {
                     </>
                   )}
                 </Popover>
-                <Link to='/' className="text-base font-medium text-gray-500 hover:text-gray-900">
-                  Pricing
+                <Link to='/shop' className="text-base font-medium text-gray-500 hover:text-gray-900">
+                  Shop
                 </Link>
                 <Link to='/' className="text-base font-medium text-gray-500 hover:text-gray-900">
                   Docs
@@ -473,7 +468,7 @@ export default function Navbar() {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          {/* popover.panel visible solo moviles al dar click en el logo menu (las 3 rayitas) */}
+          {/* popover.panel visible solo moviles al dar click en el logo menu (las 3 rayitas) Shop, Docs, Categorías, Resources, Blog, Contact Sales */}
           <Popover.Panel
             focus
             className="absolute z-30 top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
@@ -522,8 +517,8 @@ export default function Navbar() {
               </div>
               <div className="py-6 px-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
-                    Pricing
+                  <Link to='/shop' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
+                    Shop
                   </Link>
 
                   <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
@@ -531,7 +526,7 @@ export default function Navbar() {
                   </Link>
 
                   <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
-                    Company
+                    Categorías
                   </Link>
 
                   <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">

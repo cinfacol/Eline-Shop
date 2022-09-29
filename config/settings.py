@@ -40,6 +40,7 @@ PROJECT_APPS = [
 ]
 ECOMMERCE_APPS = [
     'apps.category.apps.CategoryConfig',
+    'apps.product.apps.ProductConfig',
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
