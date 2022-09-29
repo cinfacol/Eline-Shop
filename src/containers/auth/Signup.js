@@ -16,6 +16,11 @@ const Signup = ({ status }) => {
   }, []);
 
   const accountCreated = useSelector(state => state.auth.isAccountCreated);
+  const { isLoggedIn, user } = useSelector(state => state.auth.user);
+
+  console.log(isLoggedIn);
+
+  const usuario = user.first_name;
 
   const { displayNotification } = useNotification();
 
@@ -89,144 +94,150 @@ const Signup = ({ status }) => {
 
   return (
     <Layout>
-      <div className='min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
-        <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-          <svg className='mx-auto w-12 h-12 text-gray-400' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path fillRule='evenodd' d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z' clipRule='evenodd'></path></svg>
+      {!isLoggedIn ?
+        <div className='min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
           <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-            <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>Registrarse</h2>
+            <svg className='mx-auto w-12 h-12 text-gray-400' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path fillRule='evenodd' d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z' clipRule='evenodd'></path></svg>
+            <div className='sm:mx-auto sm:w-full sm:max-w-md'>
+              <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>Registrarse</h2>
+            </div>
           </div>
-        </div>
-        <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
-          <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSignup}
-            >
-              <Form>
-                {!accountCreated && (
-                  <div>
+          <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
+            <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSignup}
+              >
+                <Form>
+                  {!accountCreated && (
                     <div>
-                      <label htmlFor='first_name' className='block text-sm font-medium text-gray-700'>
-                        Nombre
-                      </label>
-                      <div className='mt-1'>
-                        <Field
-                          name='first_name'
-                          type='text'
-                          className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                          placeholder='Ingrese su nombre'
-                        />
-                        <ErrorMessage
-                          name='first_name'
-                          component='div'
-                          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
-                        />
-                      </div>
-                    </div>
-
-                    <div className='mt-5'>
-                      <label htmlFor='last_name' className='block text-sm font-medium text-gray-700'>
-                        Apellido
-                      </label>
-                      <div className='mt-1'>
-                        <Field
-                          name='last_name'
-                          type='text'
-                          className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                          placeholder='Ingrese su nombre'
-                        />
-                        <ErrorMessage
-                          name='last_name'
-                          component='div'
-                          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
-                        />
-                      </div>
-                    </div>
-
-                    <div className='mt-5'>
-                      <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
-                        Email
-                      </label>
-                      <div className='mt-1'>
-                        <Field
-                          name='email'
-                          type='email'
-                          className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                          placeholder='Ingrese su Correo Electrónico'
-                        />
-                        <ErrorMessage
-                          name='email'
-                          component='div'
-                          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
-                        />
-                      </div>
-                    </div>
-
-                    <div className='mt-5'>
-                      <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
-                        Contraseña
-                      </label>
-                      <div className='mt-1'>
-                        <Field
-                          name='password'
-                          type='password'
-                          className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                          placeholder='Ingrese su Contraseña'
-                        />
-                        <ErrorMessage
-                          name='password'
-                          component='div'
-                          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
-                        />
-                      </div>
-                    </div>
-
-                    <div className='mt-5'>
-                      <label htmlFor='re_password' className='block text-sm font-medium text-gray-700'>
-                        Confirmar Contraseña
-                      </label>
-                      <div className='mt-1'>
-                        <Field
-                          name='re_password'
-                          type='password'
-                          className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                          placeholder='Confirme su contraseña'
-                        />
-                        <ErrorMessage
-                          name='re_password'
-                          component='div'
-                          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
-                        />
-                      </div>
-                    </div>
-                    <div className='mt-5'>
-                      {(loading === 'pending') ?
-                        <button
-                        type='submit'
-                          className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                        >
-                          <Oval
-                            color='#fff'
-                            width={20}
-                            height={20}
+                      <div>
+                        <label htmlFor='first_name' className='block text-sm font-medium text-gray-700'>
+                          Nombre
+                        </label>
+                        <div className='mt-1'>
+                          <Field
+                            name='first_name'
+                            type='text'
+                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            placeholder='Ingrese su nombre'
                           />
-                        </button> :
-                        <button
+                          <ErrorMessage
+                            name='first_name'
+                            component='div'
+                            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
+                          />
+                        </div>
+                      </div>
+
+                      <div className='mt-5'>
+                        <label htmlFor='last_name' className='block text-sm font-medium text-gray-700'>
+                          Apellido
+                        </label>
+                        <div className='mt-1'>
+                          <Field
+                            name='last_name'
+                            type='text'
+                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            placeholder='Ingrese su nombre'
+                          />
+                          <ErrorMessage
+                            name='last_name'
+                            component='div'
+                            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
+                          />
+                        </div>
+                      </div>
+
+                      <div className='mt-5'>
+                        <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
+                          Email
+                        </label>
+                        <div className='mt-1'>
+                          <Field
+                            name='email'
+                            type='email'
+                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            placeholder='Ingrese su Correo Electrónico'
+                          />
+                          <ErrorMessage
+                            name='email'
+                            component='div'
+                            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
+                          />
+                        </div>
+                      </div>
+
+                      <div className='mt-5'>
+                        <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+                          Contraseña
+                        </label>
+                        <div className='mt-1'>
+                          <Field
+                            name='password'
+                            type='password'
+                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            placeholder='Ingrese su Contraseña'
+                          />
+                          <ErrorMessage
+                            name='password'
+                            component='div'
+                            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
+                          />
+                        </div>
+                      </div>
+
+                      <div className='mt-5'>
+                        <label htmlFor='re_password' className='block text-sm font-medium text-gray-700'>
+                          Confirmar Contraseña
+                        </label>
+                        <div className='mt-1'>
+                          <Field
+                            name='re_password'
+                            type='password'
+                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            placeholder='Confirme su contraseña'
+                          />
+                          <ErrorMessage
+                            name='re_password'
+                            component='div'
+                            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
+                          />
+                        </div>
+                      </div>
+                      <div className='mt-5'>
+                        {(loading === 'pending') ?
+                          <button
                           type='submit'
-                          className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                        >
-                          Sign Up
-                        </button>
-                      }
+                            className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                          >
+                            <Oval
+                              color='#fff'
+                              width={20}
+                              height={20}
+                            />
+                          </button> :
+                          <button
+                            type='submit'
+                            className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                          >
+                            Sign Up
+                          </button>
+                        }
+                      </div>
                     </div>
-                  </div>
-                )}
-              </Form>
-            </Formik>
+                  )}
+                </Form>
+              </Formik>
+            </div>
           </div>
         </div>
-      </div>
+      :
+        <div className='sm:mx-auto sm:w-full sm:max-w-md'>
+          <h4 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>{usuario} - Tu registro está completado, y tienes una sesion activa</h4>
+        </div>
+      }
     </Layout>
   )
 }
