@@ -1,29 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { get_categories } from '../services/categories/categories.service';
+import { get_products_by_sold } from '../services/products/products.service';
 
 const initialState = {
-  categories: null,
+  products_sold: null,
   status: 'idle',
+  error: null
 };
 
-export const categoriesSlice = createSlice({
-  name: 'categories',
+export const soldSlice = createSlice({
+  name: 'arrival',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-    .addCase(get_categories.pending, (state) => {
+    .addCase(get_products_by_sold.pending, (state) => {
       if (state.status === 'idle') {
         state.status = 'pending';
       }
     })
-    .addCase(get_categories.fulfilled, (state, action) => {
+    .addCase(get_products_by_sold.fulfilled, (state, action) => {
       if (state.status === 'pending') {
         state.status = 'idle';
-        state.categories = action.payload.categories;
+        state.products_sold = action.payload.products;
       }
     })
-    .addCase(get_categories.rejected, (state, action) => {
+    .addCase(get_products_by_sold.rejected, (state, action) => {
       if (state.status === 'pending') {
         state.status = 'idle';
         state.error = action.error.message
@@ -32,5 +33,5 @@ export const categoriesSlice = createSlice({
   }
 })
 
-const { reducer } = categoriesSlice;
+const { reducer } = soldSlice;
 export default reducer;

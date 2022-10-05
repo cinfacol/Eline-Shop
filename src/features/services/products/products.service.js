@@ -87,6 +87,7 @@ export const get_product = createAsyncThunk(
     try {
       const res = await authApi.get(`/api/product/product/${productId}`, config);
       if (res.status === 200) {
+
         return res.data;
       } else {
         thunkAPI.dispatch(Error);
@@ -112,6 +113,7 @@ export const get_related_products = createAsyncThunk(
     try {
       const res = await authApi.get(`/api/product/related/${productId}`, config);
       if (res.status === 200) {
+
         return res.data;
       } else {
         thunkAPI.dispatch(Error);

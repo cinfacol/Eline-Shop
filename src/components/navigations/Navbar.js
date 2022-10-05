@@ -75,7 +75,6 @@ export default function Navbar() {
 
   useEffect(() => {
     dispatch(get_categories());
-    // dispatch(get_products());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -87,15 +86,8 @@ export default function Navbar() {
   const { displayNotification } = useNotification();
 
   const categorias = useSelector(state => state.categories.categories);
-  // const products = useSelector(state => state.products.products);
 
   let location = useLocation();
-
-  /* useEffect(() => {
-    dispatch(get_categories());
-    dispatch(get_products());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) */
 
   const logoutHandler = useCallback(() => {
     dispatch(logout());
@@ -390,11 +382,11 @@ export default function Navbar() {
                           </div>
                           <div className="relative max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2">
                             <nav className="grid gap-y-10 px-4 py-8 bg-white sm:grid-cols-2 sm:gap-x-8 sm:py-12 sm:px-6 lg:px-8 xl:pr-12">
-                              {(categorias.length > 0) && (categorias.map((item) => (
+                              {(categorias && (categorias.length > 0)) && (categorias.map((item) => (
                                 <div key={item.id}>
                                   <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">{item.name}</h3>
                                   <ul className="mt-5 space-y-6">
-                                    {item.sub_categories.map((sub_item) => (
+                                    {item.sub_categories && item.sub_categories.map((sub_item) => (
                                       <li key={sub_item.id} className="flow-root">
                                         <Link
                                           to="/"

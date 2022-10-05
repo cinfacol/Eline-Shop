@@ -9,18 +9,17 @@ import ProductsSold from '../components/home/ProductsSold'
 const Home = () => {
 
   const dispatch = useDispatch();
-  const products_arrival = useSelector(state => state.products.products_arrival);
-  const products_sold = useSelector(state => state.products.products_sold);
+  const products_arrival = useSelector(state => state.arrival.products_arrival);
+  const products_sold = useSelector(state => state.sold.products_sold);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    dispatch(get_products_by_arrival())
-  }, [dispatch]);
+    dispatch(get_products_by_arrival());
+    dispatch(get_products_by_sold());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    dispatch(get_products_by_sold())
-  }, [dispatch]);
+
 
   return (
     <Layout>

@@ -1,6 +1,6 @@
 import Layout from '../hocs/Layout';
-import { Fragment, useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { Fragment, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import { ChevronDownIcon, FilterIcon, MinusSmIcon, PlusSmIcon, ViewGridIcon } from '@heroicons/react/solid';
@@ -64,14 +64,13 @@ const filters = [
 //   return classes.filter(Boolean).join(' ')
 // }
 
-
 // constantes temporales
 const get_filtered_products = {}
 const filtered_products = {}
 
 const Shop = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const categories = useSelector(state => state.categories.categories);
   const [filtered, setFiltered] = useState(false);
   const [formData, setFormData] = useState({
@@ -86,12 +85,6 @@ const Shop = () => {
     sortBy,
     order
   } = formData;
-
-  useEffect(() => {
-    // dispatch(get_products())
-    window.scrollTo(0, 0)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const products = useSelector(state => state.products.products);
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value })

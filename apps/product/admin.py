@@ -1,32 +1,60 @@
 from django.contrib import admin
 
-from apps.product.models import Product
+from apps.product.models import (DetailsProduct, ImgProduct,
+                                 ItemsDetailsProduct, Product)
+
+
+class ItemsDetailsProductAdmin(admin.TabularInline):
+    model = ItemsDetailsProduct
+
+
+class DetailsProductAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'name'
+    )
+    list_display_links = (
+        'id',
+        'name',
+    )
+
+    inlines = [
+        ItemsDetailsProductAdmin
+    ]
+
+
+class ImgProductAdmin(admin.TabularInline):
+    model = ImgProduct
 
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
-        "name",
-        "compare_price",
-        "price",
-        "quantity",
-        "sold",
+        'id',
+        'name',
+        'compare_price',
+        'price',
+        'quantity',
+        'sold',
     )
     list_display_links = (
-        "id",
-        "name",
+        'id',
+        'name',
     )
-    list_filter = ("category",)
+    list_filter = ('category',)
     list_editable = (
-        "compare_price",
-        "price",
-        "quantity",
+        'compare_price',
+        'price',
+        'quantity',
     )
     search_fields = (
-        "name",
-        "description",
+        'name',
+        'description',
     )
     list_per_page = 25
+    inlines = [
+        ImgProductAdmin
+    ]
 
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(DetailsProduct, DetailsProductAdmin)
