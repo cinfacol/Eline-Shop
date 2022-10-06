@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import DetailsProduct, ImgProduct, ItemsDetailsProduct, Product
+from .models import (ColorProduct, DetailsProduct, ImgProduct,
+                     ItemsDetailsProduct, Product)
 
 
 class ImgProductSerializer(serializers.ModelSerializer):
@@ -24,6 +25,12 @@ class ItemsDetailsProductSerializer(serializers.ModelSerializer):
         ]
 
 
+class ColorProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColorProduct
+        fields = '__all__'
+
+
 class DetailsProductSerializer(serializers.ModelSerializer):
     item = ItemsDetailsProductSerializer(
         many=True, read_only=True, source='item_detail')
@@ -42,6 +49,8 @@ class ProductSerializer(serializers.ModelSerializer):
         many=True, read_only=True, source='prod_images')
     details = DetailsProductSerializer(
         many=True, read_only=True, source='prod_details')
+    color = ColorProductSerializer(
+        many=True, read_only=True, source='product_color')
 
     class Meta:
         model = Product
@@ -57,4 +66,5 @@ class ProductSerializer(serializers.ModelSerializer):
             'date_created',
             'images',
             'details',
+            'color',
         ]

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.product.models import (DetailsProduct, ImgProduct,
+from apps.product.models import (ColorProduct, DetailsProduct, ImgProduct,
                                  ItemsDetailsProduct, Product)
 
 
@@ -25,6 +25,10 @@ class DetailsProductAdmin(admin.ModelAdmin):
 
 class ImgProductAdmin(admin.TabularInline):
     model = ImgProduct
+
+
+class ColorProductAdmin(admin.TabularInline):
+    model = ColorProduct
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -52,7 +56,8 @@ class ProductAdmin(admin.ModelAdmin):
     )
     list_per_page = 25
     inlines = [
-        ImgProductAdmin
+        ImgProductAdmin,
+        ColorProductAdmin
     ]
 
 

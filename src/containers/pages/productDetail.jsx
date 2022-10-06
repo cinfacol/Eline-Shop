@@ -2,10 +2,13 @@ import Layout from '../../hocs/Layout';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { colors } from '../../helpers/fixedColors';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
 import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
+
+const colorProduct = colors;
 
 const producto = {
   name: 'Zip Tote Basket',
@@ -50,7 +53,7 @@ function classNames(...classes) {
 }
 
 export default function ProductDetail() {
-  const [selectedColor, setSelectedColor] = useState(producto.colors[0])
+  const [selectedColor, setSelectedColor] = useState(colorProduct[0])
 
   const product = useSelector(state => state.products.product);
 
@@ -160,7 +163,7 @@ export default function ProductDetail() {
                   <RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-2">
                     <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
                     <div className="flex items-center space-x-3">
-                      {producto.colors.map((color) => (
+                      {colorProduct.map((color) => (
                         <RadioGroup.Option
                           key={color.name}
                           value={color}

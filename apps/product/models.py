@@ -1,7 +1,4 @@
 from datetime import datetime
-from distutils.command.upload import upload
-from itertools import product
-from tabnanny import verbose
 
 from django.conf import settings
 from django.db import models
@@ -46,6 +43,21 @@ class ImgProduct(models.Model):
 
     def __str__(self):
         return self.alt_text
+
+
+""" class ColorType(DjangoChoices):
+    blanco = ChoiceItem('whithe')
+    negro = ChoiceItem('black') """
+
+
+class ColorProduct(models.Model):
+    name = models.CharField(max_length=20, blank=True, null=True)
+    product = models.ForeignKey(
+        Product, blank=True, null=True, related_name='product_color', on_delete=models.CASCADE)
+    data = models.JSONField()
+
+    def __str__(self):
+        return self.name
 
 
 class DetailsProduct(models.Model):
