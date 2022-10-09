@@ -45,7 +45,8 @@ export const productsSlice = createSlice({
     .addCase(get_search_products.fulfilled, (state, action) => {
       if (state.status === 'pending') {
         state.status = 'idle';
-        state.search_products = action.payload.products;
+        state.search_products = action.payload.search_products;
+        state.error = action.payload.error;
       }
     })
     .addCase(get_search_products.rejected, (state, action) => {
@@ -62,7 +63,8 @@ export const productsSlice = createSlice({
     .addCase(get_filtered_products.fulfilled, (state, action) => {
       if (state.status === 'pending') {
         state.status = 'idle';
-        state.filtered_products = action.payload.products;
+        state.filtered_products = action.payload.filtered_products;
+        state.error = action.payload.error;
       }
     })
     .addCase(get_filtered_products.rejected, (state, action) => {

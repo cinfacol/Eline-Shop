@@ -2,9 +2,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Fragment, useState, useEffect, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
 import { get_categories } from '../../features/services/categories/categories.service';
-// import { get_products } from '../../features/services/products/products.service';
+import { get_search_products } from '../../features/services/products/products.service';
 import { Menu, Popover, Transition } from '@headlessui/react';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation, NavLink } from 'react-router-dom';
 import {
   ChartBarIcon,
   CheckCircleIcon,
@@ -19,6 +19,7 @@ import {
 import { ChevronDownIcon, ShoppingCartIcon } from '@heroicons/react/solid';
 import { Notification } from '../../containers/pages/notification';
 import { useNotification } from '../../hooks/useNotification';
+import SearchBox from './SearchBox';
 
 const solutions = [
   {
@@ -73,13 +74,31 @@ export default function Navbar() {
 
   const dispatch = useDispatch();
 
+  const [render, setRender] = useState(false);
+  const [formData, setFormData] = useState({
+    category_id: '0',
+    search: ''
+  });
+  const {
+    category_id,
+    search
+  } = formData;
+
+  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onSubmit = e => {
+    e.preventDefault();
+    window.scrollTo(0, 0);
+    dispatch(get_search_products({category_id, search}));
+    setRender(!render);
+  }
+
+
   useEffect(() => {
     dispatch(get_categories());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { isLoggedIn, user = {} } = useSelector(state => state.auth.user);
-
   const [redirect, setRedirect] = useState(false);
 
   const notifications = useSelector(state => state.notification.message);
@@ -88,6 +107,7 @@ export default function Navbar() {
   const categorias = useSelector(state => state.categories.categories);
 
   let location = useLocation();
+
 
   const logoutHandler = useCallback(() => {
     dispatch(logout());
@@ -209,15 +229,12 @@ export default function Navbar() {
     </Menu>
   )
 
+  if (render) {
+    return <Navigate to = "/search" />
+  }
+
   return (
     <>
-      {/* <div>
-        {products && (products.map((product) => (
-          <div key={product.id}>
-            <p className="text-base font-medium text-gray-900">{product.name}</p>
-          </div>
-        )))}
-      </div> */}
       {
         (location.pathname !== '/') && (redirect ? <Navigate to='/' /> : null)
       }
@@ -265,7 +282,7 @@ export default function Navbar() {
 
             {/* div oculto para moviles Menu principal (Solutions, shop, Docs, Categories) */}
             <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
-              <Popover.Group as="nav" className="flex space-x-10">
+              <Popover.Group as="nav" className="flex space-x-10 items-center">
                 <Popover>
                   {({ open }) => (
                     <>
@@ -341,12 +358,20 @@ export default function Navbar() {
                     </>
                   )}
                 </Popover>
-                <Link to='/shop' className="text-base font-medium text-gray-500 hover:text-gray-900">
+                <NavLink to='/shop' className="text-base font-medium text-gray-500 hover:text-gray-900">
                   Shop
-                </Link>
-                <Link to='/' className="text-base font-medium text-gray-500 hover:text-gray-900">
-                  Docs
-                </Link>
+                </NavLink>
+
+                {
+                  (location.pathname !== '/search') ?
+                  <SearchBox
+                    search={search}
+                    onChange={onChange}
+                    onSubmit={onSubmit}
+                    categories={categorias}
+                  /> : <></>
+                }
+
                 <Popover>
                   {({ open }) => (
                     <>
@@ -443,7 +468,7 @@ export default function Navbar() {
                   {isLoggedIn ? authLinks : guestLinks }
                 </div>
                 <Link to="/">
-                  <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 mr-6 mr-4" />
+                  <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 lg:mr-6 mr-4" />
                   <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{2}</span>
                 </Link>
               </div>

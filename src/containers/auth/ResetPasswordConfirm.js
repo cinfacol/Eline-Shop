@@ -59,7 +59,6 @@ const ResetPasswordConfirm = () => {
         displayNotification({ message: 'Error al resetear tu contraseña', type: 'error' });
       });
   };
-  console.log('password_reset', passwordReset);
 
   return (
     <Layout>

@@ -148,7 +148,7 @@ export const get_filtered_products = createAsyncThunk(
       if (error.res.data) {
         return thunkAPI.rejectWithValue(error.res.data);
       } else {
-        return thunkAPI.rejectWithValue(error.res.message);
+        return thunkAPI.rejectWithValue(error.message);
       }
     }
   }

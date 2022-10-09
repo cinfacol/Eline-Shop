@@ -2,50 +2,13 @@ import Layout from '../../hocs/Layout';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { colors } from '../../helpers/fixedColors';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
 import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
 
-const colorProduct = colors;
-
 const producto = {
-  name: 'Zip Tote Basket',
-  price: '$140',
   rating: 4,
-  images: [
-    {
-      id: 1,
-      name: 'Angled view',
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-03-product-01.jpg',
-      alt: 'Angled front view with bag zipped and handles upright.',
-    },
-    // More images...
-  ],
-  colors: [
-    { name: 'Washed Black', bgColor: 'bg-gray-700', selectedColor: 'ring-gray-700' },
-    { name: 'White', bgColor: 'bg-white', selectedColor: 'ring-gray-400' },
-    { name: 'Washed Gray', bgColor: 'bg-gray-500', selectedColor: 'ring-gray-500' },
-  ],
-  description: `
-    <p>The Zip Tote Basket is the perfect midpoint between shopping tote and comfy backpack. With convertible straps, you can hand carry, should sling, or backpack this convenient and spacious bag. The zip top and durable canvas construction keeps your goods protected for all-day use.</p>
-  `,
-  details: [
-    {
-      name: 'Features',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
-    },
-    // More sections...
-  ],
 }
 
 function classNames(...classes) {
@@ -53,20 +16,26 @@ function classNames(...classes) {
 }
 
 export default function ProductDetail() {
-  const [selectedColor, setSelectedColor] = useState(colorProduct[0])
-
-  const product = useSelector(state => state.products.product);
-
-  const params = useParams();
-  const productId = params.productId;
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(get_product(productId));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const product = useSelector(state => state.products.product);
+
+  const first_color = product && product.color[0] && product.color[0].data;
+
+  const [selectedColor, setSelectedColor] = useState(first_color);
+
+  const colores = product && product.color;
+
+  const params = useParams();
+  const productId = params.productId;
+
+  const dispatch = useDispatch();
+
 
   return (
     <Layout>
@@ -154,61 +123,64 @@ export default function ProductDetail() {
                   dangerouslySetInnerHTML={{ __html: product && product.description }}
                 />
               </div>
+              {(colores && colores.length !== 0) && (
+                <form className="mt-6">
+                  {/* Colors */}
+                  <div>
+                    <h3 className="text-sm text-gray-600">Color</h3>
 
-              <form className="mt-6">
-                {/* Colors */}
-                <div>
-                  <h3 className="text-sm text-gray-600">Color</h3>
+                    <RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-2">
+                      <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
+                      <div className="flex items-center space-x-3">
+                        {colores && Array.isArray(colores) ? colores.map((color) => (
+                          <RadioGroup.Option
+                            key={color.data.name}
+                            value={color}
+                            className={({ active, checked }) =>
+                              classNames(
+                                color.data.selectedColor,
+                                active && checked ? 'ring ring-offset-1' : '',
+                                !active && checked ? 'ring-2' : '',
+                                '-m-0.5 relative p-0.5 rounded-full flex items-center justify-center cursor-pointer focus:outline-none'
+                              )
+                            }
+                          >
+                            <RadioGroup.Label as="p" className="sr-only">
+                              {color.data.name}
+                            </RadioGroup.Label>
+                            <span
+                              aria-hidden="true"
+                              className={classNames(
+                                color.data.bgColor,
+                                'h-8 w-8 border border-black border-opacity-10 rounded-full'
+                              )}
+                            />
+                          </RadioGroup.Option>
+                        )) : 'No es un array'
+                        }
+                      </div>
+                    </RadioGroup>
+                  </div>
 
-                  <RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-2">
-                    <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
-                    <div className="flex items-center space-x-3">
-                      {colorProduct.map((color) => (
-                        <RadioGroup.Option
-                          key={color.name}
-                          value={color}
-                          className={({ active, checked }) =>
-                            classNames(
-                              color.selectedColor,
-                              active && checked ? 'ring ring-offset-1' : '',
-                              !active && checked ? 'ring-2' : '',
-                              '-m-0.5 relative p-0.5 rounded-full flex items-center justify-center cursor-pointer focus:outline-none'
-                            )
-                          }
-                        >
-                          <RadioGroup.Label as="p" className="sr-only">
-                            {color.name}
-                          </RadioGroup.Label>
-                          <span
-                            aria-hidden="true"
-                            className={classNames(
-                              color.bgColor,
-                              'h-8 w-8 border border-black border-opacity-10 rounded-full'
-                            )}
-                          />
-                        </RadioGroup.Option>
-                      ))}
-                    </div>
-                  </RadioGroup>
-                </div>
+                  <div className="mt-10 flex sm:flex-col1">
+                    <button
+                      type="submit"
+                      className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
+                    >
+                      Agregar al Carrito
+                    </button>
 
-                <div className="mt-10 flex sm:flex-col1">
-                  <button
-                    type="submit"
-                    className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
-                  >
-                    Agregar al Carrito
-                  </button>
+                    <button
+                      type="button"
+                      className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                    >
+                      <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                      <span className="sr-only">Add to favorites</span>
+                    </button>
+                  </div>
+                </form>
+              )}
 
-                  <button
-                    type="button"
-                    className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-                  >
-                    <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                    <span className="sr-only">Add to favorites</span>
-                  </button>
-                </div>
-              </form>
 
               <section aria-labelledby="details-heading" className="mt-12">
                 <h2 id="details-heading" className="sr-only">

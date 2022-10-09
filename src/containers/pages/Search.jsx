@@ -1,108 +1,51 @@
+import Layout from '../../hocs/Layout';
+import { useSelector, useDispatch } from 'react-redux';
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import { FilterIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/solid';
-import { connect } from 'react-redux';
-import { get_categories } from '../../features/services/categories/categories.service';
 import { get_products, get_filtered_products } from '../../features/services/products/products.service';
-import ProductCard from '../../components/product/ProductCard'
+import ProductCard from '../../components/product/ProductCard';
 import { prices } from '../../helpers/fixedPrices';
-import Navbar from '../../components/navigations/Navbar';
-import Footer from '../../components/navigations/Footer';
 
-/* const sortOptions = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
-  { name: 'Newest', href: '#', current: false },
-  { name: 'Price: Low to High', href: '#', current: false },
-  { name: 'Price: High to Low', href: '#', current: false },
-] */
-/* const subCategories = [
-  { name: 'Totes', href: '#' },
-  { name: 'Backpacks', href: '#' },
-  { name: 'Travel Bags', href: '#' },
-  { name: 'Hip Bags', href: '#' },
-  { name: 'Laptop Sleeves', href: '#' },
-] */
-/* const filters = [
-  {
-    id: 'color',
-    name: 'Color',
-    options: [
-      { value: 'white', label: 'White', checked: false },
-      { value: 'beige', label: 'Beige', checked: false },
-      { value: 'blue', label: 'Blue', checked: true },
-      { value: 'brown', label: 'Brown', checked: false },
-      { value: 'green', label: 'Green', checked: false },
-      { value: 'purple', label: 'Purple', checked: false },
-    ],
-  },
-  {
-    id: 'category',
-    name: 'Category',
-    options: [
-      { value: 'new-arrivals', label: 'New Arrivals', checked: false },
-      { value: 'sale', label: 'Sale', checked: false },
-      { value: 'travel', label: 'Travel', checked: true },
-      { value: 'organization', label: 'Organization', checked: false },
-      { value: 'accessories', label: 'Accessories', checked: false },
-    ],
-  },
-  {
-    id: 'size',
-    name: 'Size',
-    options: [
-      { value: '2l', label: '2L', checked: false },
-      { value: '6l', label: '6L', checked: false },
-      { value: '12l', label: '12L', checked: false },
-      { value: '18l', label: '18L', checked: false },
-      { value: '20l', label: '20L', checked: false },
-      { value: '40l', label: '40L', checked: true },
-    ],
-  },
-] */
+const Search = () => {
 
-/* function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-} */
+  const dispatch = useDispatch();
 
-const Search = ({
-  get_categories,
-  categories,
-  get_products,
-  products,
-  get_filtered_products,
-  searched_products,
-  filtered_products
-}) => {
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [filtered, setFiltered] = useState(false)
+  const filtered_products = useSelector(state => state.products.filtered_products);
+  const filtered_no_products = useSelector(state => state.products.error);
+  const searched_products = useSelector(state => state.products.search_products);
+  const categories = useSelector(state => state.categories.categories);
+  const products = useSelector(state => state.products.products);
+
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const [filtered, setFiltered] = useState(false);
   const [formData, setFormData] = useState({
     category_id: '0',
     price_range: 'Any',
-    sortBy: 'created',
+    sort_by: 'created',
     order: 'desc'
-  })
-
+  });
   const {
     category_id,
     price_range,
-    sortBy,
+    sort_by,
     order
-  } = formData
+  } = formData;
 
   useEffect(() => {
-    get_categories()
-    get_products()
-    window.scrollTo(0, 0)
+    dispatch(get_products());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value })
+  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = e => {
-    e.preventDefault()
-    get_filtered_products(category_id, price_range, sortBy, order)
-    setFiltered(true)
+    e.preventDefault();
+    window.scrollTo(0, 0);
+    dispatch(get_filtered_products({category_id, price_range, sort_by, order}));
+    setFiltered(true);
   }
 
   const showProducts = () => {
@@ -123,6 +66,7 @@ const Search = ({
         );
       });
     } else if (
+      !filtered &&
       searched_products &&
       searched_products !== null &&
       searched_products !== undefined
@@ -134,6 +78,13 @@ const Search = ({
           </div>
         );
       });
+    } else {
+      return (
+        <div >
+          <h1>{filtered_no_products}</h1>
+      </div>
+      )
+
     }
 
     for (let i = 0; i < display.length; i += 3) {
@@ -147,14 +98,13 @@ const Search = ({
     }
 
     return results
-
   }
+
   return (
-    <div>
-      <Navbar />
+    <Layout>
       <div className="bg-white">
         <div>
-          {/* Mobile filter dialog */}
+          {/* Mobile filter dialog - OCULTO PARA PC */}
           <Transition.Root show={mobileFiltersOpen} as={Fragment}>
             <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setMobileFiltersOpen}>
               <Transition.Child
@@ -191,7 +141,7 @@ const Search = ({
                     </button>
                   </div>
 
-                  {/* MOBILE FILTERS */}
+                  {/* Mobile Filters */}
                   <form onSubmit={e => onSubmit(e)} className="mt-4 border-t border-gray-200">
                     <h3 className="sr-only">Categories</h3>
                     <ul className="font-medium text-gray-900 px-2 py-3">
@@ -199,7 +149,7 @@ const Search = ({
                         categories &&
                         categories !== null &&
                         categories !== undefined &&
-                        categories.map(category => {
+                        categories.map((category) => {
                           if (category.sub_categories.length === 0) {
                             return (
                               <div key={category.id} className=' flex items-center h-5 my-5'>
@@ -309,6 +259,7 @@ const Search = ({
                         </>
                       )}
                     </Disclosure>
+
                     <Disclosure as="div" className="border-t border-gray-200 px-4 py-6">
                       {({ open }) => (
                         <>
@@ -333,7 +284,7 @@ const Search = ({
                                     id='sortBy'
                                     name='sortBy'
                                     onChange={e => onChange(e)}
-                                    value={sortBy}
+                                    value={sort_by}
                                   >
                                     <option value='date_created'>Fecha</option>
                                     <option value='price'>Precio</option>
@@ -361,6 +312,7 @@ const Search = ({
                         </>
                       )}
                     </Disclosure>
+
                     <button
                       type="submit"
                       className="float-right inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -372,13 +324,17 @@ const Search = ({
               </Transition.Child>
             </Dialog>
           </Transition.Root>
+
+          {/* OCULTO PARA MOBILES */}
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative z-10 flex items-baseline justify-between pt-24 pb-6 border-b border-gray-200">
-              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">Productos
+              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
+                Productos
                 ({searched_products &&
                   searched_products !== null &&
                   searched_products !== undefined &&
-                  searched_products.length})</h1>
+                  searched_products.length})
+              </h1>
               <div className="flex items-center">
                 <button
                   type="button"
@@ -390,6 +346,7 @@ const Search = ({
                 </button>
               </div>
             </div>
+
             <section aria-labelledby="products-heading" className="pt-6 pb-24">
               <h2 id="products-heading" className="sr-only">
                 Products
@@ -410,6 +367,8 @@ const Search = ({
                             <div key={category.id} className=' flex items-center h-5 my-5'>
                               <input
                                 name='category_id'
+                                onChange={e => onChange(e)}
+                                value={category.id.toString()}
                                 type='radio'
                                 className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                               />
@@ -424,6 +383,8 @@ const Search = ({
                             <div key={category.id} className='flex items-center h-5'>
                               <input
                                 name='category_id'
+                                onChange={e => onChange(e)}
+                                value={category.id.toString()}
                                 type='radio'
                                 className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                               />
@@ -437,6 +398,8 @@ const Search = ({
                               <div key={sub_category.id} className='flex items-center h-5 ml-2 my-5'>
                                 <input
                                   name='category_id'
+                                  onChange={e => onChange(e)}
+                                  value={sub_category.id.toString()}
                                   type='radio'
                                   className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                                 />
@@ -451,6 +414,7 @@ const Search = ({
                       })
                     }
                   </ul>
+
                   <Disclosure as="div" className="border-t border-gray-200 px-4 py-6">
                     {({ open }) => (
                       <>
@@ -466,7 +430,7 @@ const Search = ({
                             </span>
                           </Disclosure.Button>
                           <Disclosure.Panel className="pt-6">
-                            <div className="space-y-6">
+                            {<div className="space-y-6">
                               {
                                 prices && prices.map((price, index) => {
                                   if (price.id === 0) {
@@ -499,12 +463,13 @@ const Search = ({
                                   }
                                 })
                               }
-                            </div>
+                            </div>}
                           </Disclosure.Panel>
                         </h3>
                       </>
                     )}
                   </Disclosure>
+
                   <Disclosure as="div" className="border-t border-gray-200 px-4 py-6">
                     {({ open }) => (
                       <>
@@ -529,12 +494,13 @@ const Search = ({
                                   id='sortBy'
                                   name='sortBy'
                                   onChange={e => onChange(e)}
-                                  value={sortBy}
+                                  value={sort_by}
                                 >
                                   <option value='date_created'>Fecha</option>
                                   <option value='price'>Precio</option>
                                   <option value='sold'>Sold</option>
                                   <option value='title'>Nombre</option>
+
                                 </select>
                               </div>
                               <div className='form-group'>
@@ -557,6 +523,7 @@ const Search = ({
                       </>
                     )}
                   </Disclosure>
+
                   <button
                     type="submit"
                     className="float-right inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -564,9 +531,9 @@ const Search = ({
                     Buscar
                   </button>
                 </form>
+
                 {/* Product grid */}
                 <div className="lg:col-span-3">
-                  {/* Replace with your content */}
                   {products && showProducts()}
                 </div>
               </div>
@@ -574,18 +541,8 @@ const Search = ({
           </main>
         </div>
       </div>
-      <Footer />
-    </div>
+    </Layout>
   )
 }
-const mapStateToProps = state => ({
-  categories: state.Categories.categories,
-  products: state.Products.products,
-  searched_products: state.Products.search_products,
-  filtered_products: state.Products.filtered_products
-})
-export default connect(mapStateToProps, {
-  get_categories,
-  get_products,
-  get_filtered_products
-})(Search)
+
+export default Search

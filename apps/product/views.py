@@ -1,13 +1,11 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import permissions, status
-
-from apps.product.models import Product
-
-from apps.product.serializers import ProductSerializer
-from apps.category.models import Category
-
 from django.db.models import Q
+from rest_framework import permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from apps.category.models import Category
+from apps.product.models import Product
+from apps.product.serializers import ProductSerializer
 
 
 class ProductDetailView(APIView):
@@ -235,7 +233,7 @@ class ListBySearchView(APIView):
             category_id = int(data["category_id"])
         except:
             return Response(
-                {"error": "Category ID must be an integer"},
+                {"error": "Category ID debe ser un entero"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
