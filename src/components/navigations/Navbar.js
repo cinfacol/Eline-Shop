@@ -43,9 +43,9 @@ const solutions = [
   },
 ]
 const callsToAction = [
-  { name: 'Watch Demo', href: '#', icon: PlayIcon },
-  { name: 'View All Products', href: '#', icon: CheckCircleIcon },
-  { name: 'Contact Sales', href: '#', icon: PhoneIcon },
+  { name: 'Watch Demo', href: '/', icon: PlayIcon },
+  { name: 'View All Products', href: '/shop', icon: CheckCircleIcon },
+  { name: 'Contact Sales', href: '/', icon: PhoneIcon },
 ]
 const blogPosts = [
   {
@@ -264,7 +264,7 @@ export default function Navbar() {
                   {isLoggedIn ? authLinks : guestLinks }
                   <div className='mt-5'>
                     <Link to="/">
-                      <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 mr-6 mr-4" />
+                      <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 md:mr-6 mr-4" />
                       <span className="text-xs relative bottom-10 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{2}</span>
                     </Link>
                   </div>
@@ -409,7 +409,7 @@ export default function Navbar() {
                             <nav className="grid gap-y-10 px-4 py-8 bg-white sm:grid-cols-2 sm:gap-x-8 sm:py-12 sm:px-6 lg:px-8 xl:pr-12">
                               {(categorias && (categorias.length > 0)) && (categorias.map((item) => (
                                 <div key={item.id}>
-                                  <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">{item.name}</h3>
+                                  <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">{(item.sub_categories.length > 0) && item.name}</h3>
                                   <ul className="mt-5 space-y-6">
                                     {item.sub_categories && item.sub_categories.map((sub_item) => (
                                       <li key={sub_item.id} className="flow-root">
@@ -467,7 +467,7 @@ export default function Navbar() {
                   <div>{user ? user.first_name : 'Invitado'}</div>
                   {isLoggedIn ? authLinks : guestLinks }
                 </div>
-                <Link to="/">
+                <Link to="/cart">
                   <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 lg:mr-6 mr-4" />
                   <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{2}</span>
                 </Link>
@@ -537,23 +537,9 @@ export default function Navbar() {
                   <Link to='/shop' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
                     Shop
                   </Link>
-
-                  <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
-                    Docs
-                  </Link>
-
                   <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
                     Categorías
                   </Link>
-
-                  <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
-                    Resources
-                  </Link>
-
-                  <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
-                    Blog
-                  </Link>
-
                   <Link to='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
                     Contact Sales
                   </Link>

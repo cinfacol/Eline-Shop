@@ -1,11 +1,14 @@
 import Layout from '../../hocs/Layout';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
 import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
+import { add_item } from '../../features/services/cart/cart.service';
+import { Oval } from 'react-loader-spinner';
+import { useNotification } from '../../hooks/useNotification';
 
 const producto = {
   rating: 4,
@@ -24,6 +27,8 @@ export default function ProductDetail() {
   }, []);
 
   const product = useSelector(state => state.products.product);
+  const cart = useSelector(state => state.cart);
+  const { displayNotification } = useNotification();
 
   const first_color = product && product.color[0] && product.color[0].data;
 
@@ -31,10 +36,34 @@ export default function ProductDetail() {
 
   const colores = product && product.color;
 
+  // const [loading, setLoading] = useState(false);
+  let loading = false;
+
+  const isLoading = useSelector(state => state.cart.status)
+
+  if (isLoading === 'pending') {
+    loading = true
+  }
+
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const addToCart = () => {
+    if (product && product !== null && product !== undefined && product.quantity > 0) {
+      dispatch(add_item({product}));
+
+      const cart_error = cart.error
+      if (cart_error) {
+        displayNotification({ message: `${cart_error.error}`, type: 'error' });
+      }
+      navigate('/cart');
+    }
+  }
+
   const params = useParams();
   const productId = params.productId;
 
-  const dispatch = useDispatch();
 
 
   return (
@@ -162,13 +191,47 @@ export default function ProductDetail() {
                     </RadioGroup>
                   </div>
 
+                  <p className="mt-4">
+                    {
+                      product &&
+                      product !== null &&
+                      product !== undefined &&
+                      product.quantity > 0 ?
+                      (
+                        <span className='text-green-500'>
+                          In Stock
+                        </span>
+                      ) :
+                      (
+                        <span className='text-red-500'>
+                          Out of Stock
+                        </span>
+                      )
+                    }
+                  </p>
+
                   <div className="mt-10 flex sm:flex-col1">
-                    <button
+                    {loading ?
+                      <button
+                        className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                        <Oval
+                          color="#fff"
+                          width={20}
+                          height={20} />
+                      </button>
+                      :
+                      <button
+                        onClick={addToCart}
+                        className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                        Agregar al Carrito
+                      </button>
+                    }
+                    {/* <button
                       type="submit"
                       className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
                     >
                       Agregar al Carrito
-                    </button>
+                    </button> */}
 
                     <button
                       type="button"
@@ -180,7 +243,6 @@ export default function ProductDetail() {
                   </div>
                 </form>
               )}
-
 
               <section aria-labelledby="details-heading" className="mt-12">
                 <h2 id="details-heading" className="sr-only">

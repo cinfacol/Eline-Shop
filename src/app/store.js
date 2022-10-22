@@ -6,6 +6,7 @@ import productsReducer from '../features/products/productsSlice';
 import arrivalReducer from '../features/products/arrivalSlice';
 import soldReducer from '../features/products/soldSlice';
 import relatedReducer from '../features/products/relatedSlice';
+import cartReducer from '../features/cart/cartSlice';
 
 const reducer = {
   auth: authReducer,
@@ -15,6 +16,7 @@ const reducer = {
   arrival: arrivalReducer,
   sold: soldReducer,
   related: relatedReducer,
+  cart: cartReducer,
 }
 
 const store = configureStore({

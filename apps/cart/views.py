@@ -46,7 +46,7 @@ class AddItemView(APIView):
             product_id = int(data["product_id"])
         except:
             return Response(
-                {"error": "Product ID must be an integer"},
+                {"error": "Product ID debe ser un número entero"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -96,11 +96,11 @@ class AddItemView(APIView):
                         result.append(item)
 
                     return Response({"cart": result}, status=status.HTTP_201_CREATED)
-                else:
-                    return Response(
-                        {"error": "Not enough of this item in stock"},
-                        status=status.HTTP_200_OK,
-                    )
+            else:
+                return Response(
+                    {"error": "Not enough of this item in stock"},
+                    status=status.HTTP_200_OK,
+                )
         except:
             return Response(
                 {"error": "Something went wrong when adding item to cart"},

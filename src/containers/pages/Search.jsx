@@ -35,6 +35,7 @@ const Search = () => {
   } = formData;
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     dispatch(get_products());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
