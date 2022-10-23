@@ -6,7 +6,7 @@ import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
 import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
-import { add_item } from '../../features/services/cart/cart.service';
+import { add_item, get_items, get_total, get_item_total } from '../../features/services/cart/cart.service';
 import { Oval } from 'react-loader-spinner';
 import { useNotification } from '../../hooks/useNotification';
 
@@ -52,6 +52,9 @@ export default function ProductDetail() {
   const addToCart = () => {
     if (product && product !== null && product !== undefined && product.quantity > 0) {
       dispatch(add_item({product}));
+      dispatch(get_items());
+      dispatch(get_total());
+      dispatch(get_item_total());
 
       const cart_error = cart.error
       if (cart_error) {
@@ -210,7 +213,7 @@ export default function ProductDetail() {
                     }
                   </p>
 
-                  <div className="mt-10 flex sm:flex-col1">
+                  <div className="mt-4 flex sm:flex-col1">
                     {loading ?
                       <button
                         className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
@@ -226,12 +229,6 @@ export default function ProductDetail() {
                         Agregar al Carrito
                       </button>
                     }
-                    {/* <button
-                      type="submit"
-                      className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
-                    >
-                      Agregar al Carrito
-                    </button> */}
 
                     <button
                       type="button"

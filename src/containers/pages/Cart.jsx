@@ -1,6 +1,7 @@
 import Layout from '../../hocs/Layout'
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNotification } from '../../hooks/useNotification';
 import {
   remove_item,
   update_item,
@@ -14,8 +15,12 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/solid'
 
 const Cart = () => {
 
-  const { items, amount, compare_amount, total_items } = useSelector(state => state.cart);
+  const amount = useSelector(state => state.cart.amount);
+  const compare_amount = useSelector(state => state.cart.compare_amount);
+  const total_items = useSelector(state => state.cart.total_items);
+  const items = useSelector(state => state.cart.items);
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
+  const { displayNotification } = useNotification();
 
   const dispatch = useDispatch();
 
@@ -24,10 +29,10 @@ const Cart = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(get_items());
-    dispatch(get_total())
-    dispatch(get_item_total())
+    dispatch(get_total());
+    // dispatch(get_item_total());
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [render])
+  }, []);
 
   const showItems = () => {
     return (
@@ -48,6 +53,7 @@ const Cart = () => {
                   remove_item={remove_item}
                   render={render}
                   setRender={setRender}
+                  setAlert={displayNotification}
                 />
               </div>
             );
@@ -134,7 +140,7 @@ const Cart = () => {
 
                 <div className='flex items-center justify-between'>
                   <dt className='text-sm text-gray-600'>Subtotal</dt>
-                  <dd className='text-sm font-medium text-gray-900'>${compare_amount.toFixed(2)}</dd>
+                  <dd className='text-sm font-medium text-gray-900'>${compare_amount && compare_amount.toFixed(2)}</dd>
                 </div>
 
                 <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>

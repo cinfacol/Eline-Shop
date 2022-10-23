@@ -73,7 +73,6 @@ export const get_items = createAsyncThunk(
       try {
         const res = await authApi.get(`/api/cart/cart-items`, config);
         if (res.status === 200) {
-          console.log('get_items_data', res.data);
           return res.data;
         } else {
           thunkAPI.dispatch(Error);

@@ -3,6 +3,7 @@ import { Fragment, useState, useEffect, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
 import { get_categories } from '../../features/services/categories/categories.service';
 import { get_search_products } from '../../features/services/products/products.service';
+import { get_item_total } from '../../features/services/cart/cart.service';
 import { Menu, Popover, Transition } from '@headlessui/react';
 import { Link, Navigate, useLocation, NavLink } from 'react-router-dom';
 import {
@@ -95,10 +96,12 @@ export default function Navbar() {
 
   useEffect(() => {
     dispatch(get_categories());
+    dispatch(get_item_total());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { isLoggedIn, user = {} } = useSelector(state => state.auth.user);
+  const total_items = useSelector(state => state.cart.total_items);
   const [redirect, setRedirect] = useState(false);
 
   const notifications = useSelector(state => state.notification.message);
@@ -265,7 +268,7 @@ export default function Navbar() {
                   <div className='mt-5'>
                     <Link to="/">
                       <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 md:mr-6 mr-4" />
-                      <span className="text-xs relative bottom-10 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{2}</span>
+                      <span className="text-xs relative bottom-10 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{total_items}</span>
                     </Link>
                   </div>
                 </div>
@@ -469,7 +472,7 @@ export default function Navbar() {
                 </div>
                 <Link to="/cart">
                   <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 lg:mr-6 mr-4" />
-                  <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{2}</span>
+                  <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{total_items}</span>
                 </Link>
               </div>
             </div>
