@@ -3,14 +3,14 @@ import { authApi } from './authApi';
 
 export const signup = createAsyncThunk(
   'auth/signup',
-  async ({ first_name, last_name, email, password, re_password }, thunkAPI) => {
+  async ({ username, first_name, last_name, email, password, re_password }, thunkAPI) => {
     try {
       const config = {
         headers: {
           'Content-Type': 'application/json'
         }
       };
-      const response = await authApi.post(`/auth/users/`, {first_name, last_name, email, password, re_password}, config);
+      const response = await authApi.post(`/auth/users/`, {username, first_name, last_name, email, password, re_password}, config);
 
       if (response.status === 201) {
         return response.data;
@@ -67,7 +67,6 @@ export const login = createAsyncThunk(
         localStorage.setItem('refresh', response.data.refresh);
 
         return response.data;
-
       }
     } catch (error) {
       if (error.response) {

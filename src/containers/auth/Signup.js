@@ -27,6 +27,7 @@ const Signup = ({ status }) => {
   const loading = useSelector(state => state.auth.status);
 
   const initialValues = {
+    username: '',
     first_name: '',
     last_name: '',
     email: '',
@@ -35,6 +36,16 @@ const Signup = ({ status }) => {
   };
 
   const validationSchema = Yup.object().shape({
+    username: Yup.string()
+      .test(
+        'len',
+        'The username must be between 3 and 20 characters.',
+        (val) =>
+          val &&
+          val.toString().length >= 3 &&
+          val.toString().length <= 20
+      )
+      .required('This field is required!'),
     first_name: Yup.string()
       .test(
         'len',
@@ -75,6 +86,7 @@ const Signup = ({ status }) => {
 
   const handleSignup = (formValue) => {
     const {
+      username,
       first_name,
       last_name,
       email,
@@ -82,7 +94,7 @@ const Signup = ({ status }) => {
       re_password
     } = formValue;
 
-    dispatch(signup({ first_name, last_name, email, password, re_password }))
+    dispatch(signup({ username, first_name, last_name, email, password, re_password }))
       .unwrap()
       .then(() => {
         displayNotification({message: 'Tu cuenta se ha registrado exitosamente, revisa tu email para activarla', type: 'success'});
@@ -112,6 +124,25 @@ const Signup = ({ status }) => {
                 <Form>
                   {!accountCreated && (
                     <div>
+                      <div>
+                        <label htmlFor='username' className='block text-sm font-medium text-gray-700'>
+                          Nombre de usuario
+                        </label>
+                        <div className='mt-1'>
+                          <Field
+                            name='username'
+                            type='text'
+                            className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            placeholder='Ingrese su nombre de usuario o apodo'
+                          />
+                          <ErrorMessage
+                            name='username'
+                            component='div'
+                            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'
+                          />
+                        </div>
+                      </div>
+
                       <div>
                         <label htmlFor='first_name' className='block text-sm font-medium text-gray-700'>
                           Nombre

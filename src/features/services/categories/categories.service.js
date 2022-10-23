@@ -14,7 +14,7 @@ export const get_categories = createAsyncThunk(
       if (res.status === 200) {
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {

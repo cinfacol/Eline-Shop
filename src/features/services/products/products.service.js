@@ -14,7 +14,7 @@ export const get_products = createAsyncThunk(
       if (res.status === 200) {
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {
@@ -39,7 +39,7 @@ export const get_products_by_arrival = createAsyncThunk(
       if (res.status === 200) {
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {
@@ -64,7 +64,7 @@ export const get_products_by_sold = createAsyncThunk(
       if (res.status === 200) {
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {
@@ -90,7 +90,7 @@ export const get_product = createAsyncThunk(
 
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {
@@ -116,7 +116,7 @@ export const get_related_products = createAsyncThunk(
 
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {
@@ -142,7 +142,7 @@ export const get_filtered_products = createAsyncThunk(
       if (res.status === 200) {
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {
@@ -167,7 +167,7 @@ export const get_search_products = createAsyncThunk(
       if (res.status === 200) {
         return res.data;
       } else {
-        thunkAPI.dispatch(Error);
+        return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.res.data) {
