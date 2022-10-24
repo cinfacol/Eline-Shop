@@ -30,14 +30,14 @@ const Cart = () => {
     window.scrollTo(0, 0);
     dispatch(get_items());
     dispatch(get_total());
-    // dispatch(get_item_total());
+    dispatch(get_item_total());
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [render]);
 
   const showItems = () => {
     return (
       <div>
-        {
+        {Array.isArray(items) ?
           items &&
           items !== null &&
           items !== undefined &&
@@ -57,7 +57,7 @@ const Cart = () => {
                 />
               </div>
             );
-          })
+          }) : null
         }
       </div>
     )

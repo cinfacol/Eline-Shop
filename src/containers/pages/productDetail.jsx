@@ -49,7 +49,8 @@ export default function ProductDetail() {
 
   const dispatch = useDispatch();
 
-  const addToCart = () => {
+  const addToCart = e => {
+    e.preventDefault()
     if (product && product !== null && product !== undefined && product.quantity > 0) {
       dispatch(add_item({product}));
       dispatch(get_items());
@@ -156,7 +157,7 @@ export default function ProductDetail() {
                 />
               </div>
               {(colores && colores.length !== 0) && (
-                <form className="mt-6">
+                <form onSubmit={e => addToCart(e)} className="mt-6">
                   {/* Colors */}
                   <div>
                     <h3 className="text-sm text-gray-600">Color</h3>
@@ -224,7 +225,8 @@ export default function ProductDetail() {
                       </button>
                       :
                       <button
-                        onClick={addToCart}
+                        // onClick={addToCart}
+                        type='submit'
                         className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
                         Agregar al Carrito
                       </button>

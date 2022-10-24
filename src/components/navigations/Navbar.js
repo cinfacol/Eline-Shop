@@ -5,7 +5,7 @@ import { get_categories } from '../../features/services/categories/categories.se
 import { get_search_products } from '../../features/services/products/products.service';
 import { get_item_total } from '../../features/services/cart/cart.service';
 import { Menu, Popover, Transition } from '@headlessui/react';
-import { Link, Navigate, useLocation, NavLink } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useLocation, NavLink } from 'react-router-dom';
 import {
   ChartBarIcon,
   CheckCircleIcon,
@@ -75,6 +75,8 @@ export default function Navbar() {
 
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const [render, setRender] = useState(false);
   const [formData, setFormData] = useState({
     category_id: '0',
@@ -92,7 +94,7 @@ export default function Navbar() {
     dispatch(get_search_products({category_id, search}));
     setRender(!render);
   }
-
+  const total_items = useSelector(state => state.cart.total_items);
 
   useEffect(() => {
     dispatch(get_categories());
@@ -101,7 +103,7 @@ export default function Navbar() {
   }, [])
 
   const { isLoggedIn, user = {} } = useSelector(state => state.auth.user);
-  const total_items = useSelector(state => state.cart.total_items);
+
   const [redirect, setRedirect] = useState(false);
 
   const notifications = useSelector(state => state.notification.message);
@@ -111,12 +113,21 @@ export default function Navbar() {
 
   let location = useLocation();
 
+  const resetCart = (() => {
+    window.location.reload(false);
+  })
 
-  const logoutHandler = useCallback(() => {
+
+  const logoutHandler = useCallback((e) => {
+    e.preventDefault();
     dispatch(logout());
+    resetCart()
     setRedirect(true);
     displayNotification({message: 'Sesión cerrada correctamente', type: 'success'});
-  }, [dispatch, displayNotification]);
+    navigate('/');
+    console.log('render', render);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [displayNotification]);
 
   const authLinks = (
     <Menu as="div" className="relative inline-block text-left">
@@ -156,11 +167,12 @@ export default function Navbar() {
                 </Link>
               )}
             </Menu.Item>
-            <form method="POST">
+            <form onSubmit={logoutHandler} method="POST">
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={logoutHandler}
+                    // onClick={logoutHandler}
+                    type='submit'
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       'block w-full text-left px-4 py-2 text-sm'

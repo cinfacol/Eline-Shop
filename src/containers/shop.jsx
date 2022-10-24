@@ -183,6 +183,7 @@ const Shop = () => {
                                 </div>
                               )
 
+                              // eslint-disable-next-line array-callback-return
                               category.sub_categories.map(sub_category => {
                                 result.push(
                                   <div key={sub_category.id} className='flex items-center h-5 ml-2 my-5'>

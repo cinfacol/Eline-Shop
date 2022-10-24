@@ -29,7 +29,7 @@ export const cartSlice = createSlice({
     })
     .addCase(add_item.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.items = action.payload;
+        state.items = action.payload.cart;
     })
     .addCase(add_item.rejected, (state, action) => {
         state.status = 'idle';
@@ -85,6 +85,9 @@ export const cartSlice = createSlice({
     .addCase(remove_item.fulfilled, (state, action) => {
         state.status = 'idle';
         state.remove_item = action.payload;
+        if (state.total_items > 0) {
+            state.total_items -= 1
+        }
     })
     .addCase(remove_item.rejected, (state, action) => {
         state.status = 'idle';
