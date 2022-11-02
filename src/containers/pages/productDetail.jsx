@@ -6,7 +6,7 @@ import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
 import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
-import { add_item, get_items, get_total, get_item_total } from '../../features/services/cart/cart.service';
+import { add_item } from '../../features/services/cart/cart.service';
 import { Oval } from 'react-loader-spinner';
 import { useNotification } from '../../hooks/useNotification';
 
@@ -36,7 +36,6 @@ export default function ProductDetail() {
 
   const colores = product && product.color;
 
-  // const [loading, setLoading] = useState(false);
   let loading = false;
 
   const isLoading = useSelector(state => state.cart.status)
@@ -49,13 +48,10 @@ export default function ProductDetail() {
 
   const dispatch = useDispatch();
 
-  const addToCart = e => {
+  const handleAddToCart = e => {
     e.preventDefault()
     if (product && product !== null && product !== undefined && product.quantity > 0) {
       dispatch(add_item({product}));
-      dispatch(get_items());
-      dispatch(get_total());
-      dispatch(get_item_total());
 
       const cart_error = cart.error
       if (cart_error) {
@@ -67,8 +63,6 @@ export default function ProductDetail() {
 
   const params = useParams();
   const productId = params.productId;
-
-
 
   return (
     <Layout>
@@ -157,7 +151,7 @@ export default function ProductDetail() {
                 />
               </div>
               {(colores && colores.length !== 0) && (
-                <form onSubmit={e => addToCart(e)} className="mt-6">
+                <form onSubmit={e => handleAddToCart(e)} className="mt-6">
                   {/* Colors */}
                   <div>
                     <h3 className="text-sm text-gray-600">Color</h3>

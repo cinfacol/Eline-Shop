@@ -53,9 +53,10 @@ export const add_item = createAsyncThunk(
 
       if (shouldAddItem) {
         cart.push(order_item);
+        localStorage.setItem('cart', JSON.stringify(cart));
       }
 
-      return cart;
+      return [cart];
     }
   }
 );
@@ -84,6 +85,11 @@ export const get_items = createAsyncThunk(
           return thunkAPI.rejectWithValue(error.message);
         }
       }
+    } else {
+      let cart = []
+      cart = JSON.parse(localStorage.getItem('cart'));
+
+      return cart
     }
   }
 );
@@ -127,7 +133,7 @@ export const get_total = createAsyncThunk(
         });
       }
 
-      return thunkAPI.dispatch([parseFloat(total.toFixed(2)), parseFloat(compare_total.toFixed(2))]);
+      return [parseFloat(total.toFixed(2)), parseFloat(compare_total.toFixed(2))];
     }
   }
 );
@@ -157,13 +163,13 @@ export const get_item_total = createAsyncThunk(
         }
       }
     } else {
-      let total = 0.0;
+      let total = 0;
 
       if (localStorage.getItem('cart')) {
         total = JSON.parse(localStorage.getItem('cart')).length;
       }
 
-      return thunkAPI.dispatch([parseFloat(total.toFixed(2))]);
+      return total;
     }
   }
 );
@@ -200,6 +206,7 @@ export const update_item = createAsyncThunk(
       let cart = [];
 
       if (localStorage.getItem('cart')) {
+        cart = JSON.parse(localStorage.getItem('cart'));
         // eslint-disable-next-line array-callback-return
         cart.map((cart_item, index) => {
           if (cart_item.product.id.toString() === item.product.id.toString()) {
@@ -207,8 +214,8 @@ export const update_item = createAsyncThunk(
           }
         });
       }
-
-      return thunkAPI.dispatch(cart);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      return cart;
     }
   }
 );
@@ -257,9 +264,12 @@ export const remove_item = createAsyncThunk(
             new_cart.push(cart_item);
           }
         });
+        localStorage.setItem('cart', JSON.stringify(new_cart));
       }
 
-      return thunkAPI.dispatch(new_cart);
+      cart = new_cart;
+
+      return cart;
     }
   }
 );

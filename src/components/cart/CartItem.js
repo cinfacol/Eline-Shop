@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { XIcon, CheckIcon, ClockIcon } from "@heroicons/react/solid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Oval } from 'react-loader-spinner';
 
 const CartItem = ({
     item,
@@ -17,26 +18,33 @@ const CartItem = ({
     });
     const { item_count } = formData;
     const dispatch = useDispatch();
-
     useEffect(() => {
         if (count)
             setFormData({ ...formData, item_count: count });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [count]);
 
+    const loading = useSelector(state => state.cart.status);
+
+
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const onSubmit = e => {
-        e.preventDefault()
+        // e.preventDefault()
         const fetchData = async () => {
             try {
                 if (item.product.quantity >= item_count) {
-                    await update_item(item, item_count);
+
+                    count = item_count;
+                    await dispatch(update_item({ item, count }));
+
                 }
                 else {
                     setAlert('Not enough in stock', 'danger');
                 }
+                console.log('render_antes', render);
                 setRender(!render);
+                console.log('render_despues', render);
             } catch (err) {
 
             }
@@ -100,11 +108,24 @@ const CartItem = ({
                                 <option>8</option>
                                 <option>9</option>
                             </select>
+
+                            {(loading === 'pending') ?
+                            <button
+                                type="button"
+                                className="m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
+                                <span className="mx-2">
+                                    <Oval
+                                    color="#fff"
+                                    width={20}
+                                    height={20} />
+                                </span>
+                            </button> :
                             <button
                                 type="submit"
-                                className="-m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
+                                className="m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
                                 <span className="mx-2">Update</span>
-                            </button>
+
+                            </button>}
                         </form>
 
                         <div className="absolute top-0 right-0">

@@ -6,8 +6,7 @@ import {
   remove_item,
   update_item,
   get_items,
-  get_total,
-  get_item_total
+  get_total
 } from '../../features/services/cart/cart.service';
 import CartItem from '../../components/cart/CartItem';
 import { Link } from 'react-router-dom';
@@ -30,37 +29,44 @@ const Cart = () => {
     window.scrollTo(0, 0);
     dispatch(get_items());
     dispatch(get_total());
-    dispatch(get_item_total());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render]);
 
   const showItems = () => {
-    return (
-      <div>
-        {Array.isArray(items) ?
-          items &&
-          items !== null &&
-          items !== undefined &&
-          items.length !== 0 &&
-          items.map((item, index) => {
-            let count = item.count;
-            return (
-              <div key={index}>
-                <CartItem
-                  item={item}
-                  count={count}
-                  update_item={update_item}
-                  remove_item={remove_item}
-                  render={render}
-                  setRender={setRender}
-                  setAlert={displayNotification}
-                />
-              </div>
-            );
-          }) : null
-        }
-      </div>
-    )
+    if (items.length !== 0) {
+      return (
+        <div>
+          {Array.isArray(items) ?
+            items &&
+            items !== null &&
+            items !== undefined &&
+            items.length !== 0 &&
+            items.map((item, index) => {
+              let count = item.count;
+              return (
+                <div key={index}>
+                  <CartItem
+                    item={item}
+                    count={count}
+                    update_item={update_item}
+                    remove_item={remove_item}
+                    render={render}
+                    setRender={setRender}
+                    setAlert={displayNotification}
+                  />
+                </div>
+              );
+            }) : 'No es un Array'
+          }
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          No has agregado productos en tu carrito de compras
+        </div>
+      )
+    }
   }
 
   const checkoutButton = () => {

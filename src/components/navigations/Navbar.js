@@ -113,19 +113,19 @@ export default function Navbar() {
 
   let location = useLocation();
 
-  const resetCart = (() => {
-    window.location.reload(false);
-  })
+  // const resetCart = (() => {
+  //   window.location.reload(false);
+  // })
 
 
   const logoutHandler = useCallback((e) => {
     e.preventDefault();
     dispatch(logout());
-    resetCart()
+    // resetCart()
     setRedirect(true);
     displayNotification({message: 'Sesión cerrada correctamente', type: 'success'});
     navigate('/');
-    console.log('render', render);
+    window.location.reload(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayNotification]);
 

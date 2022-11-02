@@ -18,8 +18,6 @@ const Signup = ({ status }) => {
   const accountCreated = useSelector(state => state.auth.isAccountCreated);
   const { isLoggedIn, user } = useSelector(state => state.auth.user);
 
-  // console.log(isLoggedIn);
-
   const usuario = user && user.first_name;
 
   const { displayNotification } = useNotification();

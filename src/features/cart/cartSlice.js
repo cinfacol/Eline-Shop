@@ -11,7 +11,7 @@ import {
 } from '../services/cart/cart.service';
 
 const initialState = {
-  items: null,
+  items: [],
   amount: 0.00,
   compare_amount: 0.00,
   total_items: 0,
@@ -40,7 +40,11 @@ export const cartSlice = createSlice({
     })
     .addCase(get_items.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.items = action.payload.cart;
+        if (action.payload && action.payload.cart !== undefined) {
+            state.items = action.payload.cart;
+        } else {
+            state.items = action.payload;
+        }
     })
     .addCase(get_items.rejected, (state, action) => {
         state.status = 'idle';
@@ -62,18 +66,26 @@ export const cartSlice = createSlice({
     })
     .addCase(get_item_total.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.total_items = action.payload.total_items;
+        if (action.payload && action.payload.total_items !== undefined) {
+            state.total_items = action.payload.total_items;
+        } else {
+            state.total_items = action.payload;
+        }
     })
     .addCase(get_item_total.rejected, (state, action) => {
         state.status = 'idle';
         state.error = action.error.message;
     })
     .addCase(update_item.pending, (state) => {
-        state.status = 'pending';
+        if (state.status === 'idle') {
+            state.status = 'pending';
+        }
     })
     .addCase(update_item.fulfilled, (state, action) => {
-        state.status = 'idle';
-        state.update_item = action.payload;
+        if (state.status === 'pending') {
+            state.status = 'idle';
+            state.items.count = action.payload.count;
+        }
     })
     .addCase(update_item.rejected, (state, action) => {
         state.status = 'idle';
@@ -84,7 +96,7 @@ export const cartSlice = createSlice({
     })
     .addCase(remove_item.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.remove_item = action.payload;
+        state.items = action.payload;
         if (state.total_items > 0) {
             state.total_items -= 1
         }
