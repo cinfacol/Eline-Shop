@@ -55,7 +55,7 @@ export const cartSlice = createSlice({
     })
     .addCase(get_total.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.get_total = action.payload;
+        state.amount = action.payload;
     })
     .addCase(get_total.rejected, (state, action) => {
         state.status = 'idle';

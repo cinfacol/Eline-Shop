@@ -148,13 +148,13 @@ const CartItem = ({
                     (
                         <>
                             <CheckIcon className="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
-                            <span>In Stock</span>
+                            <span>Disponibles ({item.product.quantity})</span>
                         </>
                     )
                     : (
                         <>
                             <ClockIcon className="flex-shrink-0 h-5 w-5 text-gray-300" aria-hidden="true" />
-                            <span>Out of Stock</span>
+                            <span>Producto Agotado</span>
                         </>
                     )}
                 </p>

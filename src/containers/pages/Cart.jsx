@@ -14,14 +14,20 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/solid'
 
 const Cart = () => {
 
-  const amount = useSelector(state => state.cart.amount);
-  const compare_amount = useSelector(state => state.cart.compare_amount);
+  const amount = useSelector(state => state.cart.amount.total_cost);
+  const guest_amount = useSelector(state => state.cart.amount[0]);
+  let shipping = 5;
+  let tax = 8.32;
+  let guest_order_total = parseFloat(guest_amount) + parseFloat(shipping) + parseFloat(tax);
+  let order_total = parseFloat(amount) + parseFloat(shipping) + parseFloat(tax);
+  // const compare_amount = useSelector(state => state.cart.compare_amount);
   const total_items = useSelector(state => state.cart.total_items);
   const items = useSelector(state => state.cart.items);
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
   const { displayNotification } = useNotification();
 
   const dispatch = useDispatch();
+
 
   const [render, setRender] = useState(false);
 
@@ -146,7 +152,10 @@ const Cart = () => {
 
                 <div className='flex items-center justify-between'>
                   <dt className='text-sm text-gray-600'>Subtotal</dt>
-                  <dd className='text-sm font-medium text-gray-900'>${compare_amount && compare_amount.toFixed(2)}</dd>
+                  {isAuthenticated ?
+                    <dd className='text-sm font-medium text-gray-900'>${amount && amount.toFixed(2)}</dd> :
+                    <dd className='text-sm font-medium text-gray-900'>${guest_amount && guest_amount.toFixed(2)}</dd>
+                  }
                 </div>
 
                 <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
@@ -157,7 +166,7 @@ const Cart = () => {
                       <QuestionMarkCircleIcon className='h-5 w-5' aria-hidden='true' />
                     </Link>
                   </dt>
-                  <dd className='text-sm font-medium text-gray-900'>$5.00</dd>
+                  <dd className='text-sm font-medium text-gray-900'>$ {shipping.toFixed(2)} </dd>
                 </div>
 
                 <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
@@ -168,12 +177,16 @@ const Cart = () => {
                       <QuestionMarkCircleIcon className='h-5 w-5' aria-hidden='true' />
                     </Link>
                   </dt>
-                  <dd className='text-sm font-medium text-gray-900'>$8.32</dd>
+                  <dd className='text-sm font-medium text-gray-900'>$ {tax.toFixed(2)} </dd>
                 </div>
 
                 <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
                   <dt className='text-base font-medium text-gray-900'>Order total</dt>
-                  <dd className='text-base font-medium text-gray-900'>${amount.toFixed(2)}</dd>
+                  {isAuthenticated ?
+                    <dd className='text-base font-medium text-gray-900'>${order_total && order_total.toFixed(2)}</dd> :
+                    <dd className='text-base font-medium text-gray-900'>${guest_order_total && guest_order_total.toFixed(2)}</dd>
+                  }
+
                 </div>
               </dl>
 
