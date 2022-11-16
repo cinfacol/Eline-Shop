@@ -12,6 +12,8 @@ import ProductDetail from '../containers/pages/productDetail';
 import Search from '../containers/pages/Search';
 import Error404 from '../containers/errors/Error404';
 import Cart from '../containers/pages/Cart';
+import Checkout from '../containers/pages/Checkout';
+
 function App() {
   return (
     <Router>
@@ -21,6 +23,7 @@ function App() {
 
         <Route exact path='/' element={<Home />} />
         <Route exact path='/cart' element={<Cart />} />
+        <Route exact path='/checkout' element={<Checkout />} />
 
         <Route exact path='/signup' element={<Signup />} />
         <Route exact path='/login' element={<Login />} />
