@@ -42,9 +42,7 @@ const CartItem = ({
                 else {
                     setAlert('Not enough in stock', 'danger');
                 }
-                console.log('render_antes', render);
                 setRender(!render);
-                console.log('render_despues', render);
             } catch (err) {
 
             }

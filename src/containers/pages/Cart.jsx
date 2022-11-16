@@ -6,7 +6,8 @@ import {
   remove_item,
   update_item,
   get_items,
-  get_total
+  get_total,
+  get_item_total
 } from '../../features/services/cart/cart.service';
 import CartItem from '../../components/cart/CartItem';
 import { Link } from 'react-router-dom';
@@ -35,6 +36,7 @@ const Cart = () => {
     window.scrollTo(0, 0);
     dispatch(get_items());
     dispatch(get_total());
+    dispatch(get_item_total());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render]);
 

@@ -42,6 +42,7 @@ ECOMMERCE_APPS = [
     'apps.category.apps.CategoryConfig',
     'apps.product.apps.ProductConfig',
     'apps.cart.apps.CartConfig',
+    'apps.shipping.apps.ShippingConfig',
 ]
 THIRD_PARTY_APPS = [
     'corsheaders',
