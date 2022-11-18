@@ -18,15 +18,15 @@ const ShippingForm = ({
   renderShipping,
   total_amount,
   total_compare_amount,
-  // estimated_tax,
-  // shipping_cost,
+  estimated_tax,
+  shipping_cost,
   shipping_id,
   shipping,
   renderPaymentInfo,
-  // apply_coupon,
-  // coupon,
+  apply_coupon,
+  coupon,
   coupon_name,
-  // total_after_coupon
+  total_after_coupon
 }) => {
   return (
     <section
@@ -41,7 +41,7 @@ const ShippingForm = ({
           {renderShipping()}
         </div>
         <div className='flex items-center justify-between'>
-          {/* <form onSubmit={e => apply_coupon(e)}>
+          {<form onSubmit={e => apply_coupon(e)}>
             <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
               Discount Coupon
             </label>
@@ -64,10 +64,10 @@ const ShippingForm = ({
                 <span>Apply Coupon</span>
               </button>
             </div>
-          </form> */}
+          </form>}
         </div>
         {
-          /* coupon &&
+          coupon &&
             coupon !== null &&
             coupon !== undefined ? (
             <div
@@ -77,7 +77,7 @@ const ShippingForm = ({
             </div>
           ) : (
             <Fragment></Fragment>
-          ) */
+          )
         }
         <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
           <dt className='flex items-center text-sm text-gray-600'>
@@ -87,7 +87,7 @@ const ShippingForm = ({
               <QuestionMarkCircleIcon className='h-5 w-5' aria-hidden='true' />
             </Link>
           </dt>
-          <dd className='text-sm font-medium text-gray-900'>{shipping && shipping_id !== 0 ? <>${/* shipping_cost */}</> : <div className='text-red-500'>(Please select shipping option)</div>}</dd>
+          <dd className='text-sm font-medium text-gray-900'>{shipping && shipping_id !== 0 ? <>${shipping_cost}</> : <div className='text-red-500'>(Please select shipping option)</div>}</dd>
         </div>
         <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
           <dt className='flex text-sm text-gray-600'>
@@ -97,16 +97,16 @@ const ShippingForm = ({
               <QuestionMarkCircleIcon className='h-5 w-5' aria-hidden='true' />
             </Link>
           </dt>
-          <dd className='text-sm font-medium text-gray-900'>${/* estimated_tax */}</dd>
+          <dd className='text-sm font-medium text-gray-900'>${estimated_tax}</dd>
         </div>
         <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
           <dt className='flex text-sm text-gray-600'>
             <span>Subtotal</span>
           </dt>
-          <dd className='text-sm font-medium text-gray-900'>${total_compare_amount}</dd>
+          <dd className='text-sm font-medium text-gray-900'>${total_amount}</dd>
         </div>
         {
-          /* coupon &&
+          coupon &&
             coupon !== null &&
             coupon !== undefined ?
             <>
@@ -125,7 +125,7 @@ const ShippingForm = ({
             <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
               <dt className='text-base font-medium text-gray-900'>Order total</dt>
               <dd className='text-base font-medium text-gray-900'>${total_amount}</dd>
-            </div> */
+            </div>
         }
       </dl>
       <form onSubmit={e => buy(e)}>

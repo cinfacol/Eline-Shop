@@ -109,7 +109,7 @@ export const loadUser = createAsyncThunk(
   }
 )
 
-export const refrescar = createAsyncThunk(
+export const refresh = createAsyncThunk(
   'auth/refresh',
   async (arg, thunkAPI) => {
 

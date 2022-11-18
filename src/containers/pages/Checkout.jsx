@@ -1,39 +1,38 @@
 import Layout from '../../hocs/Layout';
 import { Navigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-// import { connect } from 'react-redux';
 import CartItem from '../../components/cart/CartItem';
-// import { setAlert } from '../../redux/actions/alert';
 import { useNotification } from '../../hooks/useNotification';
 import { update_item, remove_item } from '../../features/services/cart/cart.service';
 import { useState, useEffect } from 'react';
 import { get_shipping_options } from '../../features/services/shipping/shipping.service';
-// import { check_coupon } from '../../redux/actions/coupons';
+import { check_coupon } from '../../features/services/coupons/coupons.service';
 
-// import {
-//   refresh
-// } from '../../redux/actions/auth';
-
-// import {
-//   get_payment_total,
-//   get_client_token,
-//   process_payment
-// } from '../../redux/actions/payment';
+import {
+  get_payment_total,
+  get_client_token,
+  process_payment
+} from '../../features/services/payment/payment.service';
 
 import DropIn from 'braintree-web-drop-in-react';
 import { Oval } from 'react-loader-spinner';
 import { countries } from '../../helpers/fixedCountries';
 import ShippingForm from '../../components/checkout/ShippingForm';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Checkout = () => {
   const user = useSelector(state => state.auth.user.user);
+  // const refresh = useSelector(state => state.auth.refresh)
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
   const { displayNotification } = useNotification();
   const items = useSelector(state => state.cart.items);
-  const shipping = useSelector(state => state.shipping);
+  const shipping = useSelector(state => state.shipping.get_shipping_option);
+
+  const { shipping_cost, estimated_tax, clientToken, made_payment, total_after_coupon } = useSelector(state => state.payment)
   const total_amount = useSelector(state => state.cart.amount.total_cost);
-  const total_compare_amount = useSelector(state => state.total_amount)
+  const total_compare_amount = useSelector(state => state.total_amount);
+  const coupon = useSelector(state => state.coupons.coupon);
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     full_name: '',
     address_line_1: '',
@@ -64,12 +63,15 @@ const Checkout = () => {
     shipping_id,
   } = formData;
 
+  // ***** constante temporal clientToken, loading *****
+  const loading = false;
+
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const buy = async e => {
     e.preventDefault();
     let nonce = await data.instance.requestPaymentMethod();
-    /* if (coupon && coupon !== null && coupon !== undefined) {
+    if (coupon && coupon !== null && coupon !== undefined) {
       process_payment(
         nonce,
         shipping_id,
@@ -97,30 +99,31 @@ const Checkout = () => {
         country_region,
         telephone_number
       );
-    } */
+    }
   }
 
-  /* const apply_coupon = async e => {
+  const apply_coupon = async e => {
     e.preventDefault();
 
-    check_coupon(coupon_name);
-  }; */
+    dispatch(check_coupon(coupon_name));
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    get_shipping_options()
+    dispatch(get_shipping_options())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  /* useEffect(() => {
+  useEffect(() => {
     get_client_token();
-  }, [user]); */
+  }, [user]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (coupon && coupon !== null && coupon !== undefined)
       get_payment_total(shipping_id, coupon.name);
     else
       get_payment_total(shipping_id, 'default');
-  }, [shipping_id, coupon]); */
+  }, [shipping_id, coupon]);
 
   const [render, setRender] = useState(false);
 
@@ -161,7 +164,7 @@ const Checkout = () => {
     return (
       <div className='mb-5'>
         {
-         /*  shipping &&
+          shipping &&
           shipping !== null &&
           shipping !== undefined &&
           shipping.length !== 0 &&
@@ -178,14 +181,14 @@ const Checkout = () => {
                 {shipping_option.name} - ${shipping_option.price} ({shipping_option.time_to_delivery})
               </label>
             </div>
-          )) */
+          ))
         }
       </div>
     );
   };
 
   const renderPaymentInfo = () => {
-    /* if (!clientToken) {
+    if (!clientToken) {
       if (!isAuthenticated) {
         <Link
           to="/login"
@@ -235,11 +238,11 @@ const Checkout = () => {
           </div>
         </>
       )
-    } */
+    }
   }
 
-  /* if (made_payment)
-    return <Navigate to='/thankyou' />; */
+  if (made_payment)
+    return <Navigate to='/thankyou' />;
 
   return (
     <Layout>
@@ -257,6 +260,7 @@ const Checkout = () => {
             </section>
 
             {/* Order summary */}
+            {console.log('clientToken', clientToken)}
 
             <ShippingForm
               full_name={full_name}
@@ -272,15 +276,15 @@ const Checkout = () => {
               user={user}
               renderShipping={renderShipping}
               total_amount={total_amount}
-              // total_after_coupon={total_after_coupon}
+              total_after_coupon={total_after_coupon}
               total_compare_amount={total_compare_amount}
-              // estimated_tax={estimated_tax}
-              // shipping_cost={shipping_cost}
+              estimated_tax={estimated_tax}
+              shipping_cost={shipping_cost}
               shipping_id={shipping_id}
               shipping={shipping}
               renderPaymentInfo={renderPaymentInfo}
-              // coupon={coupon}
-              // apply_coupon={apply_coupon}
+              coupon={coupon}
+              apply_coupon={apply_coupon}
               coupon_name={coupon_name}
             />
           </div>

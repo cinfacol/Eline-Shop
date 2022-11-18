@@ -1,17 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { authApi } from '../auth/authApi';
 
-export const get_shipping_options = createAsyncThunk(
-  'shipping/get_shipping_options',
-  async(thunkAPI) => {
+export const check_coupon = createAsyncThunk(
+  'payment/get_shipping_total',
+  async({coupon_name}, thunkAPI) => {
     const config = {
       headers: {
         'Accept': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('access')}`
       }
     };
 
     try {
-      const res = await authApi.get(`/api/shipping/get-shipping-options`,config);
+      const res = await authApi.get(`/api/coupons/check-coupon?coupon_name=${coupon_name}`, config);
 
       if (res.status === 200) {
         return res.data;

@@ -4,7 +4,7 @@ import {
   activate,
   login,
   loadUser,
-  refrescar,
+  refresh,
   reset_password,
   reset_password_confirm
 } from '../services/auth/auth.service';
@@ -121,18 +121,18 @@ const authSlice = createSlice({
           state.user.user = {};
         }
       })
-      .addCase(refrescar.pending, (state) => {
+      .addCase(refresh.pending, (state) => {
         if (state.status === 'idle') {
           state.status = 'pending';
         }
       })
-      .addCase(refrescar.fulfilled, (state, action) => {
+      .addCase(refresh.fulfilled, (state, action) => {
         if (state.status === 'pending') {
           state.status = 'idle';
           state.access = action.payload;
         }
       })
-      .addCase(refrescar.rejected, (state, action) => {
+      .addCase(refresh.rejected, (state, action) => {
         if (state.status === 'pending') {
           state.status = 'idle';
           state.error = action.error;

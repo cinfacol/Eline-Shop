@@ -8,6 +8,8 @@ import soldReducer from '../features/products/soldSlice';
 import relatedReducer from '../features/products/relatedSlice';
 import cartReducer from '../features/cart/cartSlice';
 import shippingReducer from '../features/shipping/shippingSlice';
+import couponsReducer from '../features/coupons/couponsSlice';
+import paymentReducer from '../features/payment/paymentSlice';
 
 const reducer = {
   auth: authReducer,
@@ -19,6 +21,8 @@ const reducer = {
   related: relatedReducer,
   cart: cartReducer,
   shipping: shippingReducer,
+  coupons: couponsReducer,
+  payment: paymentReducer,
 }
 
 const store = configureStore({

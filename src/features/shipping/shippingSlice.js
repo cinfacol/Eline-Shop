@@ -14,10 +14,10 @@ export const shippingSlice = createSlice({
     .addCase(get_shipping_options.pending, (state) => {
         state.status = 'pending';
     })
-    /* .addCase(get_shipping_options.fulfilled, (state, action) => {
+    .addCase(get_shipping_options.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.get_shipping_option = action.payload;
-    }) */
+        state.get_shipping_option = action.payload.shipping_options;
+    })
     .addCase(get_shipping_options.rejected, (state, action) => {
         state.status = 'idle';
         state.error = action.payload;
