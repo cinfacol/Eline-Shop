@@ -16,7 +16,7 @@ export const shippingSlice = createSlice({
     })
     .addCase(get_shipping_options.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.get_shipping_option = action.payload.shipping_options;
+        state.shipping = action.payload.shipping_options;
     })
     .addCase(get_shipping_options.rejected, (state, action) => {
         state.status = 'idle';

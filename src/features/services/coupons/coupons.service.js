@@ -2,8 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { authApi } from '../auth/authApi';
 
 export const check_coupon = createAsyncThunk(
-  'payment/get_shipping_total',
-  async({coupon_name}, thunkAPI) => {
+  'coupons/check_coupon',
+  async(coupon_name, thunkAPI) => {
     const config = {
       headers: {
         'Accept': 'application/json',

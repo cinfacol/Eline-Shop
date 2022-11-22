@@ -39,7 +39,7 @@ class GetPaymentTotalView(APIView):
     def get(self, request, format=None):
         user = self.request.user
 
-        tax = 0.16
+        tax = 0.19
 
         shipping_id = request.query_params.get("shipping_id")
         shipping_id = str(shipping_id)
@@ -158,7 +158,7 @@ class ProcessPaymentView(APIView):
         user = self.request.user
         data = self.request.data
 
-        tax = 0.16
+        tax = 0.19
 
         nonce = data["nonce"]
         shipping_id = str(data["shipping_id"])
@@ -324,7 +324,7 @@ class ProcessPaymentView(APIView):
                     + "\n\nYou can go on your user dashboard to check the status of your order."
                     + "\n\nSincerely,"
                     + "\nShop Time",
-                    "mail@ninerogues.com",
+                    "mail@cinfacol.com",
                     [user.email],
                     fail_silently=False,
                 )

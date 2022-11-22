@@ -16,6 +16,7 @@ const ShippingForm = ({
   user,
   // profile,
   renderShipping,
+  original_price,
   total_amount,
   total_compare_amount,
   estimated_tax,
@@ -103,7 +104,7 @@ const ShippingForm = ({
           <dt className='flex text-sm text-gray-600'>
             <span>Subtotal</span>
           </dt>
-          <dd className='text-sm font-medium text-gray-900'>${total_amount}</dd>
+          <dd className='text-sm font-medium text-gray-900'>${original_price}</dd>
         </div>
         {
           coupon &&
@@ -112,7 +113,7 @@ const ShippingForm = ({
             <>
               <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
                 <dt className='flex text-sm text-gray-600'>
-                  <span>Discounted Total</span>
+                  <span>Discounted Coupon</span>
                 </dt>
                 <dd className='text-sm font-medium text-gray-900'>${total_after_coupon}</dd>
               </div>

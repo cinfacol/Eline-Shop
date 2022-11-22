@@ -3,8 +3,8 @@ import { authApi } from '../auth/authApi';
 import { get_item_total } from '../cart/cart.service';
 
 export const get_payment_total = createAsyncThunk(
-  'payment/get_shipping_total',
-  async({ shipping_id, coupon_name }, thunkAPI) => {
+  'payment/payment_total',
+  async({shipping_id, coupon_name,}, thunkAPI) => {
     const config = {
       headers: {
         'Accept': 'application/json',
@@ -84,7 +84,7 @@ export const process_payment = createAsyncThunk(
     });
 
     try {
-      const res = await authApi.post(`/api/payment/get-token`, body, config);
+      const res = await authApi.post(`/api/payment/make-payment`, body, config);
 
       if (res.status === 200 && res.data.success) {
         thunkAPI.dispatch(get_item_total());

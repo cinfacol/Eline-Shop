@@ -16,11 +16,11 @@ export const couponsSlice = createSlice({
     })
     .addCase(check_coupon.fulfilled, (state, action) => {
         state.status = 'idle';
-        // state.check_coupon = action.payload;
+        state.coupon = action.payload.coupon;
     })
     .addCase(check_coupon.rejected, (state, action) => {
         state.status = 'idle';
-        state.error = action.payload;
+        state.error = action.payload.error;
     })
   }
 })

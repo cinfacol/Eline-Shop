@@ -21,18 +21,29 @@ import ShippingForm from '../../components/checkout/ShippingForm';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Checkout = () => {
+  const dispatch = useDispatch();
+
   const user = useSelector(state => state.auth.user.user);
   // const refresh = useSelector(state => state.auth.refresh)
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
   const { displayNotification } = useNotification();
   const items = useSelector(state => state.cart.items);
-  const shipping = useSelector(state => state.shipping.get_shipping_option);
+  const shipping = useSelector(state => state.shipping.shipping);
 
-  const { shipping_cost, estimated_tax, clientToken, made_payment, total_after_coupon } = useSelector(state => state.payment)
-  const total_amount = useSelector(state => state.cart.amount.total_cost);
-  const total_compare_amount = useSelector(state => state.total_amount);
+  const {
+    clientToken,
+    made_payment,
+    original_price,
+    total_after_coupon,
+    total_amount,
+    total_compare_amount,
+    estimated_tax,
+    shipping_cost
+  } = useSelector(state => state.payment)
+  // const total_amount = useSelector(state => state.payment.total_amount);
+  // const total_compare_amount = useSelector(state => state.total_amount);
   const coupon = useSelector(state => state.coupons.coupon);
-  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     full_name: '',
     address_line_1: '',
@@ -63,7 +74,7 @@ const Checkout = () => {
     shipping_id,
   } = formData;
 
-  // ***** constante temporal clientToken, loading *****
+  // ***** constante temporal loading *****
   const loading = false;
 
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -115,14 +126,17 @@ const Checkout = () => {
   }, [])
 
   useEffect(() => {
-    get_client_token();
+    dispatch(get_client_token());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   useEffect(() => {
+    // const defecto = 'default';
     if (coupon && coupon !== null && coupon !== undefined)
-      get_payment_total(shipping_id, coupon.name);
+      dispatch(get_payment_total({shipping_id, coupon_name}));
     else
-      get_payment_total(shipping_id, 'default');
+      dispatch(get_payment_total({ shipping_id, coupon_name: 'default' }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shipping_id, coupon]);
 
   const [render, setRender] = useState(false);
@@ -160,7 +174,6 @@ const Checkout = () => {
   }
 
   const renderShipping = () => {
-
     return (
       <div className='mb-5'>
         {
@@ -260,7 +273,6 @@ const Checkout = () => {
             </section>
 
             {/* Order summary */}
-            {console.log('clientToken', clientToken)}
 
             <ShippingForm
               full_name={full_name}
@@ -275,6 +287,7 @@ const Checkout = () => {
               buy={buy}
               user={user}
               renderShipping={renderShipping}
+              original_price={original_price}
               total_amount={total_amount}
               total_after_coupon={total_after_coupon}
               total_compare_amount={total_compare_amount}

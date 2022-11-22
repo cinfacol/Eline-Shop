@@ -1,8 +1,11 @@
-from django.db import models
-from apps.product.models import Product
-from .countries import Countries
 from datetime import datetime
+
 from django.contrib.auth import get_user_model
+from django.db import models
+
+from apps.product.models import Product
+
+from .countries import Countries
 
 User = get_user_model()
 
@@ -28,7 +31,7 @@ class Order(models.Model):
     state_province_region = models.CharField(max_length=255)
     postal_zip_code = models.CharField(max_length=20)
     country_region = models.CharField(
-        max_length=255, choices=Countries.choices, default=Countries.Peru
+        max_length=255, choices=Countries.choices, default=Countries.Colombia
     )
     telephone_number = models.CharField(max_length=255)
     shipping_name = models.CharField(max_length=255)
