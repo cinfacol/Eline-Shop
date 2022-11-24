@@ -10,7 +10,7 @@ const initialState = {
   total_compare_amount: 0.0,
   estimated_tax: 0.0,
   shipping_cost: 0.0,
-  loading: false
+  status: 'idle'
 };
 
 export const paymentSlice = createSlice({
@@ -20,13 +20,7 @@ export const paymentSlice = createSlice({
     reset: (state) => {
       state.clientToken = null;
       state.made_payment = false;
-      state.original_price = 0.0;
-      state.total_after_coupon = 0.0;
-      state.total_amount = 0.0;
-      state.total_compare_amount = 0.0;
-      state.estimated_tax = 0.0;
-      state.shipping_cost = 0.0;
-      state.loading = false;
+      state.status = 'idle';
     }
   },
   extraReducers: (builder) => {
@@ -45,6 +39,12 @@ export const paymentSlice = createSlice({
     })
     .addCase(get_payment_total.rejected, (state, action) => {
         state.status = 'idle';
+        state.original_price = 0.00;
+        state.total_after_coupon = 0.00;
+        state.total_amount = 0.00;
+        state.total_compare_amount = 0.00;
+        state.estimated_tax = 0.00;
+        state.shipping_cost = 0.00;
         state.error = action.payload;
     })
 
@@ -57,18 +57,20 @@ export const paymentSlice = createSlice({
     })
     .addCase(get_client_token.rejected, (state, action) => {
         state.status = 'idle';
+        state.clientToken = null;
         state.error = action.payload;
     })
 
     .addCase(process_payment.pending, (state) => {
         state.status = 'pending';
     })
-    .addCase(process_payment.fulfilled, (state, action) => {
+    .addCase(process_payment.fulfilled, (state) => {
         state.status = 'idle';
-        // state.clientToken = action.payload.braintree_token;
+        state.made_payment = true;
     })
     .addCase(process_payment.rejected, (state, action) => {
         state.status = 'idle';
+        state.made_payment = false;
         state.error = action.payload;
     })
   }

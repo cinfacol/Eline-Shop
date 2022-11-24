@@ -69,7 +69,7 @@ export const process_payment = createAsyncThunk(
       }
     };
 
-    const body = JSON.stringify({
+    /* const body = JSON.stringify({
       nonce,
       shipping_id,
       coupon_name,
@@ -81,10 +81,11 @@ export const process_payment = createAsyncThunk(
       postal_zip_code,
       country_region,
       telephone_number
-    });
+    }); */
 
     try {
-      const res = await authApi.post(`/api/payment/make-payment`, body, config);
+      // console.log('body', body);
+      const res = await authApi.post(`/api/payment/make-payment`, {nonce, shipping_id, coupon_name, full_name, address_line_1, address_line_2, city, state_province_region, postal_zip_code, country_region, telephone_number,}, config);
 
       if (res.status === 200 && res.data.success) {
         thunkAPI.dispatch(get_item_total());

@@ -1,24 +1,27 @@
 import Layout from '../../hocs/Layout';
-import { Navigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import CartItem from '../../components/cart/CartItem';
-import { useNotification } from '../../hooks/useNotification';
-import { update_item, remove_item } from '../../features/services/cart/cart.service';
 import { useState, useEffect } from 'react';
-import { get_shipping_options } from '../../features/services/shipping/shipping.service';
-import { check_coupon } from '../../features/services/coupons/coupons.service';
+import { Navigate, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import DropIn from 'braintree-web-drop-in-react';
 
+import { useNotification } from '../../hooks/useNotification';
+
+import CartItem from '../../components/cart/CartItem';
+
+import ShippingForm from '../../components/checkout/ShippingForm';
+
+import { check_coupon } from '../../features/services/coupons/coupons.service';
+import { update_item, remove_item } from '../../features/services/cart/cart.service';
+import { refresh } from '../../features/services/auth/auth.service';
+import { get_shipping_options } from '../../features/services/shipping/shipping.service';
 import {
   get_payment_total,
   get_client_token,
   process_payment
 } from '../../features/services/payment/payment.service';
 
-import DropIn from 'braintree-web-drop-in-react';
 import { Oval } from 'react-loader-spinner';
 import { countries } from '../../helpers/fixedCountries';
-import ShippingForm from '../../components/checkout/ShippingForm';
-import { useDispatch, useSelector } from 'react-redux';
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -29,7 +32,8 @@ const Checkout = () => {
   const { displayNotification } = useNotification();
   const items = useSelector(state => state.cart.items);
   const shipping = useSelector(state => state.shipping.shipping);
-
+  const loading = useSelector(state => state.payment.status);
+  // const setAlert =
   const {
     clientToken,
     made_payment,
@@ -74,19 +78,19 @@ const Checkout = () => {
     shipping_id,
   } = formData;
 
-  // ***** constante temporal loading *****
-  const loading = false;
-
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const buy = async e => {
     e.preventDefault();
     let nonce = await data.instance.requestPaymentMethod();
+
+    // console.log('nonce', nonce);
     if (coupon && coupon !== null && coupon !== undefined) {
-      process_payment(
+      const coupon_name = coupon.name;
+      dispatch(process_payment({
         nonce,
         shipping_id,
-        coupon.name,
+        coupon_name,
         full_name,
         address_line_1,
         address_line_2,
@@ -95,12 +99,12 @@ const Checkout = () => {
         postal_zip_code,
         country_region,
         telephone_number
-      );
+      }));
     } else {
-      process_payment(
+      dispatch(process_payment({
         nonce,
         shipping_id,
-        '',
+        coupon_name:'',
         full_name,
         address_line_1,
         address_line_2,
@@ -109,9 +113,23 @@ const Checkout = () => {
         postal_zip_code,
         country_region,
         telephone_number
-      );
+      }));
     }
   }
+
+  /* console.log('shipping_id', shipping_id);
+  if (coupon) {
+    console.log('coupon_name', coupon.name);
+  } */
+
+  // console.log('full_name', full_name);
+  // console.log('address_line_1', address_line_1);
+  // console.log('address_line_2', address_line_2);
+  // console.log('city', city);
+  // console.log('state_province_region', state_province_region);
+  // console.log('postal_zip_code', postal_zip_code);
+  // console.log('country_region', country_region);
+  // console.log('telephone_number', telephone_number);
 
   const apply_coupon = async e => {
     e.preventDefault();
@@ -233,7 +251,7 @@ const Checkout = () => {
             onInstance={instance => (data.instance = instance)}
           />
           <div className="mt-6">
-            {loading ? <button
+            {(loading === 'pending') ? <button
               className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500"
             >
               <Oval

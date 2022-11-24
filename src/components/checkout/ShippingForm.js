@@ -135,14 +135,14 @@ const ShippingForm = ({
         </div>
         <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-5'>
           <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
-            Full name
+            Full Name *
           </label>
           <div className='mt-1 sm:mt-0 sm:col-span-2'>
             <div className='max-w-lg flex rounded-md shadow-sm'>
               <input
                 type='text'
                 name='full_name'
-                placeholder={`${user.first_name} ${user.last_name}`}
+                // placeholder={`${user.first_name} ${user.last_name}`}
                 onChange={e => onChange(e)}
                 value={full_name}
                 required
@@ -153,7 +153,7 @@ const ShippingForm = ({
         </div>
         <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-5'>
           <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
-            Address Line 1*
+            Address Line 1 *
           </label>
           <div className='mt-1 sm:mt-0 sm:col-span-2'>
             <div className='max-w-lg flex rounded-md shadow-sm'>
@@ -188,7 +188,7 @@ const ShippingForm = ({
         </div>
         <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-5'>
           <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
-            City*
+            Ciudad *
           </label>
           <div className='mt-1 sm:mt-0 sm:col-span-2'>
             <div className='max-w-lg flex rounded-md shadow-sm'>
@@ -206,7 +206,7 @@ const ShippingForm = ({
         </div>
         <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-5'>
           <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
-            State/Province/Region*
+            Departamento *
           </label>
           <div className='mt-1 sm:mt-0 sm:col-span-2'>
             <div className='max-w-lg flex rounded-md shadow-sm'>
@@ -224,7 +224,7 @@ const ShippingForm = ({
         </div>
         <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-5'>
           <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
-            Postal Code*
+            Código Postal *
           </label>
           <div className='mt-1 sm:mt-0 sm:col-span-2'>
             <div className='max-w-lg flex rounded-md shadow-sm'>
@@ -240,11 +240,11 @@ const ShippingForm = ({
             </div>
           </div>
         </div>
-        <div className=''>
+        <div className='mt-1'>
           <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
-            Country/Region*
+            Seleccione País *
           </label>
-          <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-5'>
+          <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-gray-200 sm:pt-2'>
             <div className=' sm:col-span-2'>
               <select
                 id='country_region'
@@ -268,7 +268,7 @@ const ShippingForm = ({
         </div>
         <div className='sm:grid sm:grid-cols-3 mb-4 sm:gap-4 sm:items-start  sm:border-gray-200 sm:pt-5'>
           <label htmlFor='telephone_number' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
-            Phone Number*
+            Teléfono *
           </label>
           <div className='mt-1 sm:mt-0 sm:col-span-2'>
             <div className='max-w-lg flex rounded-md shadow-sm'>

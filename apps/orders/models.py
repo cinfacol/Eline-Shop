@@ -37,7 +37,7 @@ class Order(models.Model):
     shipping_name = models.CharField(max_length=255)
     shipping_time = models.CharField(max_length=255)
     shipping_price = models.DecimalField(max_digits=5, decimal_places=2)
-    date_issued = models.DateTimeField(default=datetime.now)
+    date_issued = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return self.transaction_id

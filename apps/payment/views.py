@@ -161,6 +161,7 @@ class ProcessPaymentView(APIView):
         tax = 0.19
 
         nonce = data["nonce"]
+
         shipping_id = str(data["shipping_id"])
         coupon_name = str(data["coupon_name"])
 
