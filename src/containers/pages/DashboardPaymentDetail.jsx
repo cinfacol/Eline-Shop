@@ -1,15 +1,16 @@
-// import Layout from '../../hocs/Layout'
+// import Layout from '../../hocs/Layout';
 import { useEffect, Fragment, useState } from 'react';
-import { Navigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux'
-import { list_orders } from '../../features/services/orders/orders.service'
-import {
+import { useDispatch, useSelector } from 'react-redux';
+import { get_order_detail } from '../../features/services/orders/orders.service';
+import { useParams, Navigate } from 'react-router';
+import { Link } from 'react-router-dom';
+/* import {
   get_items,
   get_total,
   get_item_total
-} from '../../features/services/cart/cart.service';
+} from '../../features/services/cart/cart.service'; */
 import DashboardLink from '../../components/dashboard/DashboardLink';
-import { Dialog, Menu, Transition } from '@headlessui/react'
+import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   BellIcon,
   // CalendarIcon,
@@ -19,44 +20,57 @@ import {
   // InboxIcon,
   MenuAlt2Icon,
   // UsersIcon,
-  XIcon
+  XIcon,
+  // PaperClipIcon
 } from '@heroicons/react/outline'
 import { SearchIcon } from '@heroicons/react/solid'
-import { Link } from 'react-router-dom';
+import moment from 'moment'
 
-/* const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
-] */
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
   { name: 'Sign out', href: '#' },
 ]
 
+/* const products = [
+  {
+    id: 1,
+    name: 'Distant Mountains Artwork Tee',
+    price: '$36.00',
+    description: 'You awake in a new, mysterious land. Mist hangs low along the distant mountains. What does it mean?',
+    address: ['Floyd Miles', '7363 Cynthia Pass', 'Toronto, ON N3Y 4H8'],
+    email: 'f•••@example.com',
+    phone: '1•••••••••40',
+    href: '#',
+    status: 'Processing',
+    step: 1,
+    date: 'March 24, 2021',
+    datetime: '2021-03-24',
+    imageSrc: 'https://tailwindui.com/img/ecommerce-images/confirmation-page-04-product-01.jpg',
+    imageAlt: 'Off-white t-shirt with circular dot illustration on the front of mountain ridges that fade.',
+  },
+  // More products...
+] */
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const Dashboard = () => {
+const DashboardPaymentDetail = () => {
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
-  const user = useSelector(state => state.auth.user.user);
+  const order = useSelector(state => state.orders.order);
+  // const user = useSelector(state => state.auth.user.user);
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const params = useParams()
+  const transaction_id = params.transaction_id
 
   useEffect(() => {
-    dispatch(get_items())
-    dispatch(get_total())
-    dispatch(get_item_total())
-    dispatch(list_orders())
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    dispatch(get_order_detail(transaction_id))
+  }, [transaction_id, dispatch]);
 
   if (!isAuthenticated)
     return <Navigate to='/' />
@@ -142,13 +156,11 @@ const Dashboard = () => {
                 Regresar
               </Link>
 
-              <Link to= '/'>
-                <img
-                  className='h-8 w-auto px-3'
-                  src='https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg'
-                  alt='Workflow'
-                />
-              </Link>
+              <img
+                className='h-8 w-auto'
+                src='https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg'
+                alt='Workflow'
+              />
 
             </div>
             <div className='mt-5 flex-grow flex flex-col'>
@@ -246,40 +258,139 @@ const Dashboard = () => {
               <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                 {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
                 <div className='max-w-3xl mx-auto'>
-                  <div>
-                    <h3 className='text-lg leading-6 font-medium text-gray-900'>Applicant Information</h3>
-                    <p className='mt-1 max-w-2xl text-sm text-gray-500'>Personal details and application.</p>
-                  </div>
-                  <div className='mt-5 border-t border-gray-200'>
-                    <dl className='divide-y divide-gray-200'>
-                      <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4'>
-                        <dt className='text-sm font-medium text-gray-500'>Full name</dt>
-                        <dd className='mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          <span className='flex-grow'>{user.first_name} {user.last_name}</span>
 
-                        </dd>
+                  <div className='bg-white'>
+                    <div className='max-w-7xl mx-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-8'>
+                      <div className='bg-white'>
+                        <div className='max-w-7xl mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8'>
+                          <h1 className='text-3xl font-extrabold tracking-tight text-gray-900'>Order Details</h1>
+
+                          <div className='text-sm border-b border-gray-200 mt-2 pb-5 sm:flex sm:justify-between'>
+                            <dl className='flex'>
+                              <dt className='text-gray-500'>Transaction ID: &nbsp;</dt>
+                              <dd className='font-medium text-gray-900'>
+                                {
+                                  order &&
+                                  order !== null &&
+                                  order !== undefined &&
+                                  order.length !== 0 &&
+                                  order.transaction_id
+                                }
+                              </dd>
+                              <dt>
+                                <span className='sr-only'>Date</span>
+                                <span className='text-gray-400 mx-2' aria-hidden='true'>
+                                  &middot;
+                                </span>
+                              </dt>
+                              <dd className='font-medium text-gray-900'>
+                                <time dateTime='2021-03-22'>
+                                  {moment(
+                                    order &&
+                                    order !== null &&
+                                    order !== undefined &&
+                                    order.length !== 0 &&
+                                    order.date_issued
+                                  ).fromNow()}
+                                </time>
+                              </dd>
+                            </dl>
+                          </div>
+
+                          <div className='mt-8'>
+                            <h2 className='sr-only'>Products purchased</h2>
+
+                            <div className='space-y-24'>
+                              {
+                                order &&
+                                order !== null &&
+                                order !== undefined &&
+                                order.length !== 0 &&
+                                order.order_items.map((product, index) => (
+                                  <div
+                                    key={index}
+                                    className='grid grid-cols-1 text-sm sm:grid-rows-1 sm:grid-cols-12 sm:gap-x-6 md:gap-x-8 lg:gap-x-8'
+                                  >
+
+
+                                    <div className='mt-6 sm:col-span-7 sm:mt-0 md:row-end-1'>
+                                      <h3 className='text-lg font-medium text-gray-900'>
+                                        <Link to={`/product/${product.id}`}>{product.name}</Link>
+                                      </h3>
+                                      <p className='text-gray-500 mt-2'>
+                                        Precio: ${product.price} -
+                                        $<span className='line-through'> {product.compare_price}</span>
+                                      </p>
+                                      <p className='text-gray-500 mt-3'>{product.description}</p>
+                                    </div>
+                                    <div className='sm:col-span-12 md:col-span-7'>
+                                      <dl className='grid grid-cols-1 gap-y-8 border-b py-8 border-gray-200 sm:grid-cols-2 sm:gap-x-6 sm:py-6 md:py-10'>
+                                        <div>
+                                          <dt className='font-medium text-gray-900'>Delivery address</dt>
+                                          <dd className='mt-3 text-gray-500'>
+                                            <span className='block'>{order.address_line_1}</span>
+                                            <span className='block'>{order.address_line_2}</span>
+                                          </dd>
+                                        </div>
+                                        <div>
+                                          <dt className='font-medium text-gray-900'>Shipping</dt>
+                                          <dd className='mt-3 text-gray-500 space-y-3'>
+                                            <p>$ {order.shipping_price}</p>
+                                            <p>$ {order.amount} Total Cost</p>
+
+                                          </dd>
+                                        </div>
+                                      </dl>
+                                      <p className='font-medium text-gray-900 mt-6 md:mt-10'>
+                                        Status: {order.status}
+                                      </p>
+                                      <div className='mt-6'>
+                                        <div className='bg-gray-200 rounded-full overflow-hidden'>
+                                          <div
+                                            className='h-2 bg-indigo-600 rounded-full'
+                                            style={{ width: `calc((${product.step} * 2 + 1) / 8 * 100%)` }}
+                                          />
+                                        </div>
+                                        <div className='hidden sm:grid grid-cols-4 font-medium text-gray-600 mt-6'>
+                                          <div className='text-indigo-600'>Order placed</div>
+                                          <div className={classNames(product.step > 0 ? 'text-indigo-600' : '', 'text-center')}>
+                                            Processing
+                                          </div>
+                                          <div className={classNames(product.step > 1 ? 'text-indigo-600' : '', 'text-center')}>
+                                            Shipped
+                                          </div>
+                                          <div className={classNames(product.step > 2 ? 'text-indigo-600' : '', 'text-right')}>
+                                            Delivered
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              }
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
 
+                      <div className='mt-8'>
 
-                      <div className='py-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4'>
-                        <dt className='text-sm font-medium text-gray-500'>Email address</dt>
-                        <dd className='mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2'>
-                          <span className='flex-grow'>{user.email}</span>
+                        <div className='space-y-12'>
 
-                        </dd>
+                        </div>
                       </div>
-
-
-                    </dl>
+                    </div>
                   </div>
+
                 </div>
               </div>
             </div>
           </main>
         </div>
-      </div>
+      </div >
     </>
   )
 }
 
-export default Dashboard
+export default DashboardPaymentDetail

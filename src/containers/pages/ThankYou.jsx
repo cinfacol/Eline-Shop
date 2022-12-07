@@ -1,6 +1,7 @@
 import Layout from '../../hocs/Layout';
 import { Navigate } from 'react-router';
-import reset from '../../features/payment/paymentSlice';
+import { reset } from '../../features/payment/paymentSlice';
+import { empty_cart } from '../../features/services/cart/cart.service';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
@@ -10,7 +11,8 @@ const ThankYou = () => {
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
 
   useEffect(() => {
-    dispatch(reset);
+    dispatch(reset());
+    dispatch(empty_cart());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

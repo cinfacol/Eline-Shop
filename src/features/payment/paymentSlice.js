@@ -10,7 +10,8 @@ const initialState = {
   total_compare_amount: 0.0,
   estimated_tax: 0.0,
   shipping_cost: 0.0,
-  status: 'idle'
+  status: 'idle',
+  error: null
 };
 
 export const paymentSlice = createSlice({
@@ -20,6 +21,12 @@ export const paymentSlice = createSlice({
     reset: (state) => {
       state.clientToken = null;
       state.made_payment = false;
+      state.original_price = 0.0;
+      state.total_after_coupon = 0.0;
+      state.total_amount = 0.0;
+      state.total_compare_amount = 0.0;
+      state.estimated_tax = 0.0;
+      state.shipping_cost = 0.0;
       state.status = 'idle';
     }
   },
@@ -76,5 +83,6 @@ export const paymentSlice = createSlice({
   }
 })
 
+export const { reset } = paymentSlice.actions;
 const { reducer } = paymentSlice;
 export default reducer;

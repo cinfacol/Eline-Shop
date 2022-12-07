@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
-import { HeartIcon, MinusSmIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { HeartIcon, MinusSmIcon, PlusSmIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
 import { add_item, get_items, get_item_total, get_total } from '../../features/services/cart/cart.service';
 import { Oval } from 'react-loader-spinner';
@@ -154,91 +154,93 @@ export default function ProductDetail() {
                 />
               </div>
               {(colores && colores.length !== 0) && (
-                <form onSubmit={e => handleAddToCart(e)} className="mt-6">
-                  {/* Colors */}
-                  <div>
-                    <h3 className="text-sm text-gray-600">Color</h3>
+                <div>
+                  <h3 className="text-sm text-gray-900 mt-5">Colores Disponibles:</h3>
 
-                    <RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-2">
-                      <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
-                      <div className="flex items-center space-x-3">
-                        {colores && Array.isArray(colores) ? colores.map((color) => (
-                          <RadioGroup.Option
-                            key={color.data.name}
-                            value={color}
-                            className={({ active, checked }) =>
-                              classNames(
-                                color.data.selectedColor,
-                                active && checked ? 'ring ring-offset-1' : '',
-                                !active && checked ? 'ring-2' : '',
-                                '-m-0.5 relative p-0.5 rounded-full flex items-center justify-center cursor-pointer focus:outline-none'
-                              )
-                            }
-                          >
-                            <RadioGroup.Label as="p" className="sr-only">
-                              {color.data.name}
-                            </RadioGroup.Label>
-                            <span
-                              aria-hidden="true"
-                              className={classNames(
-                                color.data.bgColor,
-                                'h-8 w-8 border border-black border-opacity-10 rounded-full'
-                              )}
-                            />
-                          </RadioGroup.Option>
-                        )) : 'No es un array'
-                        }
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  <p className="mt-4">
-                    {
-                      product &&
-                      product !== null &&
-                      product !== undefined &&
-                      product.quantity > 0 ?
-                      (
-                        <span className='text-green-500'>
-                          In Stock
-                        </span>
-                      ) :
-                      (
-                        <span className='text-red-500'>
-                          Out of Stock
-                        </span>
-                      )
-                    }
-                  </p>
-
-                  <div className="mt-4 flex sm:flex-col1">
-                    {loading ?
-                      <button
-                        className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
-                        <Oval
-                          color="#fff"
-                          width={20}
-                          height={20} />
-                      </button>
-                      :
-                      <button
-                        // onClick={addToCart}
-                        type='submit'
-                        className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
-                        Agregar al Carrito
-                      </button>
-                    }
-
-                    <button
-                      type="button"
-                      className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-                    >
-                      <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                      <span className="sr-only">Add to favorites</span>
-                    </button>
-                  </div>
-                </form>
+                  <RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-2">
+                    <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
+                    <div className="flex items-center space-x-3">
+                      {colores && Array.isArray(colores) ? colores.map((color) => (
+                        <RadioGroup.Option
+                          key={color.data.name}
+                          value={color}
+                          className={({ active, checked }) =>
+                            classNames(
+                              color.data.selectedColor,
+                              active && checked ? 'ring ring-offset-1' : '',
+                              !active && checked ? 'ring-2' : '',
+                              '-m-0.5 relative p-0.5 rounded-full flex items-center justify-center cursor-pointer focus:outline-none'
+                            )
+                          }
+                        >
+                          <RadioGroup.Label as="p" className="sr-only">
+                            {color.data.name}
+                          </RadioGroup.Label>
+                          <span
+                            aria-hidden="true"
+                            className={classNames(
+                              color.data.bgColor,
+                              'h-8 w-8 border border-black border-opacity-10 rounded-full'
+                            )}
+                          />
+                        </RadioGroup.Option>
+                      )) : 'No es un array'
+                      }
+                    </div>
+                  </RadioGroup>
+                </div>
               )}
+              <p className="mt-2">
+                {
+                  product &&
+                  product !== null &&
+                  product !== undefined &&
+                  product.quantity > 0 ?
+                  (
+                    <>
+                      <span className='flex text-green-500'>
+                        Producto Disponible
+                        <CheckCircleIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                      </span>
+                    </>
+                  ) :
+                  (
+                    <span className='flex text-red-500'>
+                      Producto Agotado
+                      <XCircleIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                    </span>
+                  )
+                }
+              </p>
+
+              <form onSubmit={e => handleAddToCart(e)} className="mt-6">
+                <div className="mt-4 flex sm:flex-col1">
+                  {loading ?
+                    <button
+                      className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                      <Oval
+                        color="#fff"
+                        width={20}
+                        height={20} />
+                    </button>
+                    :
+                    <button
+                      // onClick={addToCart}
+                      type='submit'
+                      className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                      Agregar al Carrito
+                    </button>
+                  }
+
+                  <button
+                    type="button"
+                    className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                  >
+                    <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                    <span className="sr-only">Add to favorites</span>
+                  </button>
+                </div>
+              </form>
 
               <section aria-labelledby="details-heading" className="mt-12">
                 <h2 id="details-heading" className="sr-only">

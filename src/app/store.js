@@ -10,6 +10,7 @@ import cartReducer from '../features/cart/cartSlice';
 import shippingReducer from '../features/shipping/shippingSlice';
 import couponsReducer from '../features/coupons/couponsSlice';
 import paymentReducer from '../features/payment/paymentSlice';
+import ordersReducer from '../features/orders/ordersSlice';
 
 const reducer = {
   auth: authReducer,
@@ -23,6 +24,7 @@ const reducer = {
   shipping: shippingReducer,
   coupons: couponsReducer,
   payment: paymentReducer,
+  orders: ordersReducer,
 }
 
 const store = configureStore({

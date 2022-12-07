@@ -84,17 +84,18 @@ export const process_payment = createAsyncThunk(
     }); */
 
     try {
-      // console.log('body', body);
       const res = await authApi.post(`/api/payment/make-payment`, {nonce, shipping_id, coupon_name, full_name, address_line_1, address_line_2, city, state_province_region, postal_zip_code, country_region, telephone_number,}, config);
 
       if (res.status === 200 && res.data.success) {
         thunkAPI.dispatch(get_item_total());
+        console.log('res', res);
         return res.data;
       } else {
         return thunkAPI.dispatch(Error);
       }
     } catch (error) {
       if (error.response.data) {
+        console.log('catch_error', error);
         return thunkAPI.rejectWithValue(error.response.data);
       } else {
         return thunkAPI.rejectWithValue(error.message);

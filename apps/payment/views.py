@@ -192,7 +192,6 @@ class ProcessPaymentView(APIView):
         cart_items = CartItem.objects.filter(cart=cart)
 
         # revisar si hay stock
-
         for cart_item in cart_items:
             if not Product.objects.filter(id=cart_item.product.id).exists():
                 return Response(
@@ -290,7 +289,9 @@ class ProcessPaymentView(APIView):
                 )
             except:
                 return Response(
-                    {"error": "Transaction succeeded but failed to create the order"},
+                    {
+                        "error": "Transaction succeeded but failed to create the order"
+                    },
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
 

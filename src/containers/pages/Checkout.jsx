@@ -43,9 +43,8 @@ const Checkout = () => {
     total_compare_amount,
     estimated_tax,
     shipping_cost
-  } = useSelector(state => state.payment)
-  // const total_amount = useSelector(state => state.payment.total_amount);
-  // const total_compare_amount = useSelector(state => state.total_amount);
+  } = useSelector(state => state.payment);
+
   const coupon = useSelector(state => state.coupons.coupon);
 
   const [formData, setFormData] = useState({
@@ -99,7 +98,14 @@ const Checkout = () => {
         postal_zip_code,
         country_region,
         telephone_number
-      }));
+      }))
+        .unwrap()
+        .then(() => {
+          displayNotification({message: 'El pago fue exitoso y se ha creado la orden', type: 'success'});
+        })
+        .catch((error) => {
+          displayNotification({ message: 'hubo un error en el proceso', type: 'error' });
+        });
     } else {
       dispatch(process_payment({
         nonce,
@@ -113,7 +119,14 @@ const Checkout = () => {
         postal_zip_code,
         country_region,
         telephone_number
-      }));
+      }))
+        .unwrap()
+        .then(() => {
+          displayNotification({message: 'El pago fue exitoso y se ha creado la orden', type: 'success'});
+        })
+        .catch((error) => {
+          displayNotification({ message: 'hubo un error en el proceso', type: 'error' });
+        });
     }
   }
 

@@ -351,7 +351,7 @@ const Shop = () => {
                 Products
               </h2>
 
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-x-8 gap-y-10">
                 {/* Filters */}
                 <form onSubmit={e => onSubmit(e)} className="hidden lg:block">
                   <h3 className="sr-only">Categories</h3>
@@ -534,7 +534,7 @@ const Shop = () => {
                 </form>
 
                 {/* Product grid */}
-                <div className="lg:col-span-3">
+                <div className="lg:col-span-4">
                   {products && showProducts()}
                 </div>
               </div>
