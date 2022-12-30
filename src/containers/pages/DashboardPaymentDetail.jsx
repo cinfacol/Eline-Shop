@@ -13,15 +13,8 @@ import DashboardLink from '../../components/dashboard/DashboardLink';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   BellIcon,
-  // CalendarIcon,
-  // ChartBarIcon,
-  // FolderIcon,
-  // HomeIcon,
-  // InboxIcon,
   MenuAlt2Icon,
-  // UsersIcon,
   XIcon,
-  // PaperClipIcon
 } from '@heroicons/react/outline'
 import { SearchIcon } from '@heroicons/react/solid'
 import moment from 'moment'
@@ -311,8 +304,6 @@ const DashboardPaymentDetail = () => {
                                     key={index}
                                     className='grid grid-cols-1 text-sm sm:grid-rows-1 sm:grid-cols-12 sm:gap-x-6 md:gap-x-8 lg:gap-x-8'
                                   >
-
-
                                     <div className='mt-6 sm:col-span-7 sm:mt-0 md:row-end-1'>
                                       <h3 className='text-lg font-medium text-gray-900'>
                                         <Link to={`/product/${product.id}`}>{product.name}</Link>

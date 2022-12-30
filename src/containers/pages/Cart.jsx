@@ -1,10 +1,8 @@
 import Layout from '../../hocs/Layout'
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNotification } from '../../hooks/useNotification';
+// import { useNotification } from '../../hooks/useNotification';
 import {
-  remove_item,
-  update_item,
   get_items,
   get_total,
   get_item_total
@@ -25,7 +23,7 @@ const Cart = () => {
   const total_items = useSelector(state => state.cart.total_items);
   const items = useSelector(state => state.cart.items);
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
-  const { displayNotification } = useNotification();
+  // const { displayNotification } = useNotification();
 
   const dispatch = useDispatch();
 
@@ -56,11 +54,8 @@ const Cart = () => {
                   <CartItem
                     item={item}
                     count={count}
-                    update_item={update_item}
-                    remove_item={remove_item}
                     render={render}
                     setRender={setRender}
-                    setAlert={displayNotification}
                   />
                 </div>
               );

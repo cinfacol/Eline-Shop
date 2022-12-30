@@ -1,11 +1,13 @@
-// import Layout from '../../hocs/Layout';
-import { list_orders } from '../../features/services/orders/orders.service';
+import { Fragment, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { list_orders } from '../../features/services/orders/orders.service'
+import { get_user_profile, update_user_profile } from '../../features/services/profile/profile.service';
 import {
   get_items,
   get_total,
   get_item_total
 } from '../../features/services/cart/cart.service';
-import { useEffect, Fragment, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router';
 import DashboardLink from '../../components/dashboard/DashboardLink';
 import { Dialog, Menu, Transition } from '@headlessui/react';
@@ -18,66 +20,74 @@ import {
   // InboxIcon,
   MenuAlt2Icon,
   // UsersIcon,
-  XIcon
+  XIcon,
+  // PaperClipIcon
 } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
-import { Link } from 'react-router-dom';
-import moment from 'moment';
-import { useDispatch, useSelector } from 'react-redux';
+import { countries } from '../../helpers/fixedCountries';
+import { Oval } from 'react-loader-spinner';
 
-/* const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
-] */
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
   { name: 'Sign out', href: '#' },
 ]
 
-/* const products = [
-  {
-    id: 1,
-    name: 'Distant Mountains Artwork Tee',
-    price: '$36.00',
-    description: 'You awake in a new, mysterious land. Mist hangs low along the distant mountains. What does it mean?',
-    address: ['Floyd Miles', '7363 Cynthia Pass', 'Toronto, ON N3Y 4H8'],
-    email: 'f•••@example.com',
-    phone: '1•••••••••40',
-    href: '#',
-    status: 'Processing',
-    step: 1,
-    date: 'March 24, 2021',
-    datetime: '2021-03-24',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/confirmation-page-04-product-01.jpg',
-    imageAlt: 'Off-white t-shirt with circular dot illustration on the front of mountain ridges that fade.',
-  },
-  // More products...
-] */
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const DashboardPayments = () => {
+const DashboardProfile = () => {
+  // const orders = useSelector(state => state.orders.orders);
+  const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
+  const user = useSelector(state => state.auth.user.user);
+  const profile = useSelector(state => state.profile.profile);
+  const dispatch = useDispatch();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const dispatch = useDispatch();
-  const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
-  const orders = useSelector(state => state.orders.orders);
-  // const user = useSelector(state => state.auth.user.user);
+  const loading = useSelector(state => state.profile.status);
 
   useEffect(() => {
-    dispatch(get_items())
-    dispatch(get_total())
-    dispatch(get_item_total())
-    dispatch(list_orders())
+    dispatch(get_items(), get_total(), get_item_total(), list_orders());
+    dispatch(get_user_profile());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const [formData, setFormData] = useState({
+    address_line_1: '',
+    address_line_2: '',
+    city: '',
+    state_province_region: '',
+    zipcode: '',
+    phone: '',
+    country_region: 'Colombia'
+  });
+
+  const {
+    address_line_1,
+    address_line_2,
+    city,
+    state_province_region,
+    zipcode,
+    phone,
+    country_region
+  } = formData;
+
+  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = e => {
+    e.preventDefault();
+    dispatch(update_user_profile({
+      address_line_1,
+      address_line_2,
+      city,
+      state_province_region,
+      zipcode,
+      phone,
+      country_region
+    }));
+    window.scrollTo(0, 0);
+  };
 
   if (!isAuthenticated)
     return <Navigate to='/' />
@@ -158,7 +168,7 @@ const DashboardPayments = () => {
 
               <Link
                 to='/'
-                className='inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                className='inline-flex items-center px-2.5 py-1.5 border border-gray-500 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
               >
                 Regresar
               </Link>
@@ -264,101 +274,166 @@ const DashboardPayments = () => {
             <div className='py-6'>
               <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                 {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
-                <div className='max-w-3xl mx-auto'>
+                <form onSubmit={e => onSubmit(e)} className='max-w-3xl mx-auto'>
+                  <div className='bg-white px-4 py-5 border-b border-gray-200 sm:px-6'>
+                    <h3 className='text-lg leading-6 font-medium text-gray-900'>Perfil de  {user.first_name} {user.last_name} </h3>
+                  </div>
 
-                  <div className='bg-white'>
-                    <div className='max-w-7xl mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8'>
+                  <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                    <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
+                      Address Line 1:
+                    </label>
+                    <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div className='max-w-lg flex rounded-md shadow-sm'>
 
-
-                      <div className='mt-8'>
-
-                        <div className='space-y-12'>
-                          {orders.map((product, index) => (
-                            <div key={index}>
-                              <h2 className='sr-only'>Products purchased</h2>
-                              <h1 className='text-3xl font-extrabold tracking-tight text-gray-900'>Order Details</h1>
-
-                              <div className='text-sm border-b border-gray-200 mt-2 pb-5 sm:flex sm:justify-between'>
-                                <dl className='flex'>
-                                  <dt className='text-gray-500'>Transaction ID: &nbsp;</dt>
-                                  <dd className='font-medium text-gray-900'>{product.transaction_id}</dd>
-                                  <dt>
-                                    <span className='sr-only'>Date</span>
-                                    <span className='text-gray-400 mx-2' aria-hidden='true'>
-                                      &middot;
-                                    </span>
-                                  </dt>
-                                  <dd className='font-medium text-gray-900'>
-                                    <time dateTime='2021-03-22'>{moment(product.date_issued).fromNow()}</time>
-                                  </dd>
-                                </dl>
-                                <div className='mt-4 sm:mt-0'>
-                                  <Link to={`/dashboard/payment/${product.transaction_id}`} className='font-medium text-indigo-600 hover:text-indigo-500'>
-                                    View invoice<span aria-hidden='true'> &rarr;</span>
-                                  </Link>
-                                </div>
-                              </div>
-                              <div
-                                key={product.id}
-                                className='grid grid-cols-1 text-sm sm:grid-rows-1 sm:grid-cols-12 sm:gap-x-6 md:gap-x-8 lg:gap-x-8'
-                              >
-                                <div className='mt-6 sm:col-span-7 sm:mt-0 md:row-end-1'>
-                                  <h3 className='text-lg font-medium text-gray-900'>
-                                    <Link to={`/product/${product.id}`}>{product.name}</Link>
-                                  </h3>
-                                  <p className='font-medium text-gray-900 mt-1'>Transaction ID: {product.transaction_id}</p>
-                                  <p className='text-gray-500 mt-3'>{product.description}</p>
-                                </div>
-                                <div className='sm:col-span-12 md:col-span-7'>
-                                  <dl className='grid grid-cols-1 gap-y-8 border-b py-8 border-gray-200 sm:grid-cols-2 sm:gap-x-6 sm:py-6 md:py-10'>
-                                    <div>
-                                      <dt className='font-medium text-gray-900'>Delivery address</dt>
-                                      <dd className='mt-3 text-gray-500'>
-                                        <span className='block'>{product.address_line_1}</span>
-                                        <span className='block'>{product.address_line_2}</span>
-                                      </dd>
-                                    </div>
-                                    <div>
-                                      <dt className='font-medium text-gray-900'>Shipping</dt>
-                                      <dd className='mt-3 text-gray-500 space-y-3'>
-                                        <p>$ {product.shipping_price}</p>
-                                        <p>$ {product.amount} Total Cost</p>
-
-                                      </dd>
-                                    </div>
-                                  </dl>
-                                  <p className='font-medium text-gray-900 mt-6 md:mt-10'>
-                                    Status: {product.status}
-                                  </p>
-                                  <div className='mt-6'>
-                                    <div className='bg-gray-200 rounded-full overflow-hidden'>
-                                      <div
-                                        className='h-2 bg-indigo-600 rounded-full'
-                                        style={{ width: `calc((${product.step} * 2 + 1) / 8 * 100%)` }}
-                                      />
-                                    </div>
-                                    <div className='hidden sm:grid grid-cols-4 font-medium text-gray-600 mt-6'>
-                                      <div className='text-indigo-600'>Order placed</div>
-                                      <div className={classNames(product.step > 0 ? 'text-indigo-600' : '', 'text-center')}>
-                                        Processing
-                                      </div>
-                                      <div className={classNames(product.step > 1 ? 'text-indigo-600' : '', 'text-center')}>
-                                        Shipped
-                                      </div>
-                                      <div className={classNames(product.step > 2 ? 'text-indigo-600' : '', 'text-right')}>
-                                        Delivered
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                        <input
+                          type='text'
+                          name='address_line_1'
+                          placeholder={`${profile && profile.address_line_1}`}
+                          onChange={e => onChange(e)}
+                          value={address_line_1}
+                          required
+                          className='flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-500'
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
+
+                  <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                    <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
+                      Address Line 2:
+                    </label>
+                    <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div className='max-w-lg flex rounded-md shadow-sm'>
+
+                        <input
+                          type='text'
+                          name='address_line_2'
+                          placeholder={`${profile && profile.address_line_2}`}
+                          onChange={e => onChange(e)}
+                          value={address_line_2}
+                          className='flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-500'
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                    <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
+                      City
+                    </label>
+                    <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div className='max-w-lg flex rounded-md shadow-sm'>
+
+                        <input
+                          type='text'
+                          name='city'
+                          placeholder={`${profile && profile.city}`}
+                          onChange={e => onChange(e)}
+                          value={city}
+                          required
+                          className='flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-500'
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                    <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
+                      State/Province:
+                    </label>
+                    <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div className='max-w-lg flex rounded-md shadow-sm'>
+
+                        <input
+                          type='text'
+                          name='state_province_region'
+                          placeholder={`${profile && profile.state_province_region}`}
+                          onChange={e => onChange(e)}
+                          value={state_province_region}
+                          required
+                          className='flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-500'
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                    <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
+                      Postal Code/Zipcode:
+                    </label>
+                    <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div className='max-w-lg flex rounded-md shadow-sm'>
+
+                        <input
+                          type='text'
+                          name='zipcode'
+                          placeholder={`${profile && profile.zipcode}`}
+                          onChange={e => onChange(e)}
+                          value={zipcode}
+                          required
+                          className='flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-500'
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                    <label htmlFor='username' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
+                      Phone:
+                    </label>
+                    <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div className='max-w-lg flex rounded-md shadow-sm'>
+
+                        <input
+                          type='text'
+                          name='phone'
+                          placeholder={`${profile && profile.phone}`}
+                          onChange={e => onChange(e)}
+                          value={phone}
+                          required
+                          className='flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-500'
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                    <label htmlFor='country' className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'>
+                      Country
+                    </label>
+                    <div className='mt-1 sm:mt-0 sm:col-span-2'>
+                      <select
+                        id='country_region'
+                        name='country_region'
+                        onChange={e => onChange(e)}
+                      >
+                        <option value={country_region}>{profile && profile.country_region}</option>
+                        {
+                          countries && countries.map((country, index) => (
+                            <option key={index} value={country.name}>{country.name}</option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  </div>
+
+                  {(loading === 'pending') ? <button
+                    className='inline-flex mt-4 float-right items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                  >
+                    <Oval
+                      width={20}
+                      height={20}
+                      color='#fff'
+                    />
+                  </button> : <button
+                    type='submit'
+                    className='inline-flex mt-4 float-right items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                  >
+                    Save
+                  </button>}
+
+                </form>
               </div>
             </div>
           </main>
@@ -368,4 +443,4 @@ const DashboardPayments = () => {
   )
 }
 
-export default DashboardPayments
+export default DashboardProfile

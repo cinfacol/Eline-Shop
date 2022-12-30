@@ -12,7 +12,7 @@ import ShippingForm from '../../components/checkout/ShippingForm';
 
 import { check_coupon } from '../../features/services/coupons/coupons.service';
 import { update_item, remove_item } from '../../features/services/cart/cart.service';
-import { refresh } from '../../features/services/auth/auth.service';
+// import { refresh } from '../../features/services/auth/auth.service';
 import { get_shipping_options } from '../../features/services/shipping/shipping.service';
 import {
   get_payment_total,
@@ -60,6 +60,7 @@ const Checkout = () => {
     shipping_id: 0,
   });
 
+  // eslint-disable-next-line no-unused-vars
   const [data, setData] = useState({
     instance: {}
   });
@@ -83,7 +84,6 @@ const Checkout = () => {
     e.preventDefault();
     let nonce = await data.instance.requestPaymentMethod();
 
-    // console.log('nonce', nonce);
     if (coupon && coupon !== null && coupon !== undefined) {
       const coupon_name = coupon.name;
       dispatch(process_payment({
@@ -129,20 +129,6 @@ const Checkout = () => {
         });
     }
   }
-
-  /* console.log('shipping_id', shipping_id);
-  if (coupon) {
-    console.log('coupon_name', coupon.name);
-  } */
-
-  // console.log('full_name', full_name);
-  // console.log('address_line_1', address_line_1);
-  // console.log('address_line_2', address_line_2);
-  // console.log('city', city);
-  // console.log('state_province_region', state_province_region);
-  // console.log('postal_zip_code', postal_zip_code);
-  // console.log('country_region', country_region);
-  // console.log('telephone_number', telephone_number);
 
   const apply_coupon = async e => {
     e.preventDefault();

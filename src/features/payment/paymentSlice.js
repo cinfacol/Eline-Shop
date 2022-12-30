@@ -71,8 +71,9 @@ export const paymentSlice = createSlice({
     .addCase(process_payment.pending, (state) => {
         state.status = 'pending';
     })
-    .addCase(process_payment.fulfilled, (state) => {
+    .addCase(process_payment.fulfilled, (state, action) => {
         state.status = 'idle';
+        state.process_payment = action.payload
         state.made_payment = true;
     })
     .addCase(process_payment.rejected, (state, action) => {

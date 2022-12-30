@@ -51,10 +51,12 @@ export default function ProductDetail() {
   const handleAddToCart = e => {
     e.preventDefault()
     if (product && product !== null && product !== undefined && product.quantity > 0) {
-      dispatch(add_item({product}));
-      dispatch(get_items());
-      dispatch(get_total());
-      dispatch(get_item_total());
+      dispatch(
+        add_item({product}),
+        get_items(),
+        get_total(),
+        get_item_total()
+      );
 
       const cart_error = cart.error
       if (cart_error) {

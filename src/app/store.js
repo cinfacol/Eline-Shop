@@ -11,6 +11,7 @@ import shippingReducer from '../features/shipping/shippingSlice';
 import couponsReducer from '../features/coupons/couponsSlice';
 import paymentReducer from '../features/payment/paymentSlice';
 import ordersReducer from '../features/orders/ordersSlice';
+import profileReducer from '../features/profile/profileSlice';
 
 const reducer = {
   auth: authReducer,
@@ -25,6 +26,7 @@ const reducer = {
   coupons: couponsReducer,
   payment: paymentReducer,
   orders: ordersReducer,
+  profile: profileReducer
 }
 
 const store = configureStore({
