@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import DashboardLink from '../../components/dashboard/DashboardLink';
 import { list_orders } from '../../features/services/orders/orders.service';
 import {
-  get_items,
   get_total,
   get_item_total
 } from '../../features/services/cart/cart.service';
@@ -73,7 +72,7 @@ const DashboardPayments = () => {
   // const user = useSelector(state => state.auth.user.user);
 
   useEffect(() => {
-    dispatch(get_items())
+    // dispatch(get_items())
     dispatch(get_total())
     dispatch(get_item_total())
     dispatch(list_orders())

@@ -26,7 +26,6 @@ export const get_user_profile = createAsyncThunk(
           return thunkAPI.rejectWithValue(error.message);
         }
       }
-
     }
   }
 );

@@ -4,7 +4,6 @@ import { Navigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux'
 import { list_orders } from '../../features/services/orders/orders.service'
 import {
-  get_items,
   get_total,
   get_item_total
 } from '../../features/services/cart/cart.service';
@@ -24,14 +23,6 @@ import {
 import { SearchIcon } from '@heroicons/react/solid'
 import { Link } from 'react-router-dom';
 
-/* const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
-] */
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
@@ -51,7 +42,6 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(get_items())
     dispatch(get_total())
     dispatch(get_item_total())
     dispatch(list_orders())

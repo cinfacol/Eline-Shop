@@ -16,7 +16,9 @@ const profileSlice = createSlice({
       })
       .addCase(get_user_profile.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.profile = action.payload.profile;
+        if (action.payload) {
+          state.profile = action.payload.profile;
+        }
       })
       .addCase(get_user_profile.rejected, (state, action) => {
         state.status = 'idle';

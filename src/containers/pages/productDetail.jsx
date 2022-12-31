@@ -6,7 +6,7 @@ import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
 import { HeartIcon, MinusSmIcon, PlusSmIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
-import { add_item, get_items, get_item_total, get_total } from '../../features/services/cart/cart.service';
+import { add_item, get_item_total, get_total } from '../../features/services/cart/cart.service';
 import { Oval } from 'react-loader-spinner';
 import { useNotification } from '../../hooks/useNotification';
 
@@ -53,7 +53,7 @@ export default function ProductDetail() {
     if (product && product !== null && product !== undefined && product.quantity > 0) {
       dispatch(
         add_item({product}),
-        get_items(),
+        // get_items(),
         get_total(),
         get_item_total()
       );

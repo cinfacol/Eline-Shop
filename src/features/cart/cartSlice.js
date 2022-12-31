@@ -96,7 +96,7 @@ export const cartSlice = createSlice({
     })
     .addCase(remove_item.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.items = action.payload;
+        state.items = action.payload.cart;
         if (state.total_items > 0) {
             state.total_items -= 1
         }

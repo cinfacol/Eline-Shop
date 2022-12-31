@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
 import { get_categories } from '../../features/services/categories/categories.service';
 import { get_search_products } from '../../features/services/products/products.service';
-import { get_item_total } from '../../features/services/cart/cart.service';
+// import { get_item_total } from '../../features/services/cart/cart.service';
 import { Menu, Popover, Transition } from '@headlessui/react';
 import { Link, Navigate, useNavigate, useLocation, NavLink } from 'react-router-dom';
 import {
@@ -98,7 +98,6 @@ export default function Navbar() {
 
   useEffect(() => {
     dispatch(get_categories());
-    dispatch(get_item_total());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

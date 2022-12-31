@@ -1,12 +1,7 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { list_orders } from '../../features/services/orders/orders.service'
-import { get_user_profile, update_user_profile } from '../../features/services/profile/profile.service';
-import {
-  get_items,
-  get_total,
-  get_item_total
-} from '../../features/services/cart/cart.service';
+import { update_user_profile } from '../../features/services/profile/profile.service';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router';
 import DashboardLink from '../../components/dashboard/DashboardLink';
@@ -48,8 +43,9 @@ const DashboardProfile = () => {
   const loading = useSelector(state => state.profile.status);
 
   useEffect(() => {
-    dispatch(get_items(), get_total(), get_item_total(), list_orders());
-    dispatch(get_user_profile());
+    dispatch(list_orders());
+    // dispatch(get_items(), get_total(), get_item_total());
+    // dispatch(get_user_profile());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
