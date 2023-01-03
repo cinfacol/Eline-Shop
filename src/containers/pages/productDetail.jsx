@@ -1,14 +1,25 @@
 import Layout from '../../hocs/Layout';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
-import { HeartIcon, MinusSmIcon, PlusSmIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
+import { HeartIcon,
+  MinusSmIcon,
+  PlusSmIcon,
+  CheckCircleIcon,
+  XCircleIcon } from '@heroicons/react/outline';
 import { get_product } from '../../features/services/products/products.service';
-import { add_item, get_item_total, get_total } from '../../features/services/cart/cart.service';
+import { add_item,
+  get_item_total,
+  get_total } from '../../features/services/cart/cart.service';
+import { get_wishlist_items,
+  add_wishlist_item,
+  get_wishlist_item_total,
+  remove_wishlist_item } from '../../features/services/wishlist/wishlist.service';
 import { Oval } from 'react-loader-spinner';
 import { useNotification } from '../../hooks/useNotification';
+import WishlistHeart from '../../components/product/WishlistHeart';
 
 const producto = {
   rating: 4,
@@ -26,6 +37,18 @@ export default function ProductDetail() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    dispatch(get_wishlist_items());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    dispatch(get_wishlist_item_total());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+  const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
   const product = useSelector(state => state.products.product);
   const cart = useSelector(state => state.cart);
   const { displayNotification } = useNotification();
@@ -35,6 +58,8 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(first_color);
 
   const colores = product && product.color;
+  const wishlist = useSelector(state => state.wishlist.items);
+  // const wishlist_total = useSelector(state => state.wishlist.total_items);
 
   let loading = false;
 
@@ -50,10 +75,14 @@ export default function ProductDetail() {
 
   const handleAddToCart = e => {
     e.preventDefault()
-    if (product && product !== null && product !== undefined && product.quantity > 0) {
+    if (
+      product &&
+      product !== null &&
+      product !== undefined &&
+      product.quantity > 0
+      ) {
       dispatch(
         add_item({product}),
-        // get_items(),
         get_total(),
         get_item_total()
       );
@@ -65,6 +94,43 @@ export default function ProductDetail() {
       navigate('/cart');
     }
   }
+
+  const addToWishlist = () => {
+    if (isAuthenticated) {
+      let isPresent = false;
+      const product_id = product && product.id.toString();
+      if (
+        wishlist &&
+        wishlist !== null &&
+        wishlist !== undefined &&
+        product &&
+        product !== null &&
+        product !== undefined
+      ) {
+
+        // eslint-disable-next-line array-callback-return
+        wishlist.map(item => {
+          if (item.product.id.toString() === product_id) {
+            isPresent = true;
+          }
+        });
+      }
+      console.log('is_present', isPresent);
+      if (isPresent) {
+        dispatch(remove_wishlist_item(product_id));
+        dispatch(get_wishlist_items());
+        dispatch(get_wishlist_item_total());
+      } else {
+        // dispatch(remove_wishlist_item(product.id));
+        dispatch(add_wishlist_item(product_id));
+        dispatch(get_wishlist_items());
+        dispatch(get_wishlist_item_total());
+      }
+
+    } else {
+      return <Navigate to="/login" />
+    }
+  };
 
   const params = useParams();
   const productId = params.productId;
@@ -214,35 +280,39 @@ export default function ProductDetail() {
                   )
                 }
               </p>
+              <div className="mt-4 flex sm:flex-col1">
+                <form onSubmit={e => handleAddToCart(e)} className="mt-6">
+                    {loading ?
+                      <button
+                        className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                        <Oval
+                          color="#fff"
+                          width={20}
+                          height={20} />
+                      </button>
+                      :
+                      <button
+                        // onClick={addToCart}
+                        type='submit'
+                        className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
+                        Agregar al Carrito
+                      </button>
+                    }
+                </form>
 
-              <form onSubmit={e => handleAddToCart(e)} className="mt-6">
-                <div className="mt-4 flex sm:flex-col1">
-                  {loading ?
-                    <button
-                      className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
-                      <Oval
-                        color="#fff"
-                        width={20}
-                        height={20} />
-                    </button>
-                    :
-                    <button
-                      // onClick={addToCart}
-                      type='submit'
-                      className="max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full">
-                      Agregar al Carrito
-                    </button>
-                  }
-
-                  <button
-                    type="button"
-                    className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-                  >
-                    <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                    <span className="sr-only">Add to favorites</span>
-                  </button>
-                </div>
-              </form>
+                {/* <button
+                  type="button"
+                  onClick={addToWishlist}
+                  className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500">
+                  <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+                  <span className="sr-only">Add to favorites</span>
+                </button> */}
+                <WishlistHeart
+                  product={product}
+                  wishlist={wishlist}
+                  addToWishlist={addToWishlist}
+                />
+              </div>
 
               <section aria-labelledby="details-heading" className="mt-12">
                 <h2 id="details-heading" className="sr-only">
