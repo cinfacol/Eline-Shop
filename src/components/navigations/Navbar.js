@@ -3,6 +3,7 @@ import { Fragment, useState, useEffect, useCallback } from 'react';
 import { logout } from '../../features/auth/authSlice';
 import { get_categories } from '../../features/services/categories/categories.service';
 import { get_search_products } from '../../features/services/products/products.service';
+import { get_wishlist_item_total } from '../../features/services/wishlist/wishlist.service';
 // import { get_item_total } from '../../features/services/cart/cart.service';
 import { Menu, Popover, Transition } from '@headlessui/react';
 import { Link, Navigate, useNavigate, useLocation, NavLink } from 'react-router-dom';
@@ -17,7 +18,7 @@ import {
   ViewGridIcon,
   XIcon,
 } from '@heroicons/react/outline';
-import { ChevronDownIcon, ShoppingCartIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, ShoppingCartIcon, HeartIcon } from '@heroicons/react/solid';
 import { Notification } from '../../containers/pages/notification';
 import { useNotification } from '../../hooks/useNotification';
 import SearchBox from './SearchBox';
@@ -99,9 +100,17 @@ export default function Navbar() {
   useEffect(() => {
     dispatch(get_categories());
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+  }, []);
   const { isLoggedIn, user = {} } = useSelector(state => state.auth.user);
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(get_wishlist_item_total());
+    }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
 
   const [redirect, setRedirect] = useState(false);
 
@@ -109,6 +118,8 @@ export default function Navbar() {
   const { displayNotification } = useNotification();
 
   const categorias = useSelector(state => state.categories.categories);
+
+  const wishlist_total_items = useSelector(state => state.wishlist.total_items);
 
   let location = useLocation();
 
@@ -293,7 +304,6 @@ export default function Navbar() {
                 <MenuIcon className="h-6 w-6" aria-hidden="true" />
               </Popover.Button>
             </div>
-
             {/* div oculto para moviles Menu principal (Solutions, shop, Docs, Categories) */}
             <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
               <Popover.Group as="nav" className="flex space-x-10 items-center">
@@ -315,7 +325,6 @@ export default function Navbar() {
                           aria-hidden="true"
                         />
                       </Popover.Button>
-
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-200"
@@ -375,7 +384,6 @@ export default function Navbar() {
                 <NavLink to='/shop' className="text-base font-medium text-gray-500 hover:text-gray-900">
                   Shop
                 </NavLink>
-
                 {
                   (location.pathname !== '/search') ?
                   <SearchBox
@@ -385,7 +393,6 @@ export default function Navbar() {
                     categories={categorias}
                   /> : <></>
                 }
-
                 <Popover>
                   {({ open }) => (
                     <>
@@ -485,6 +492,13 @@ export default function Navbar() {
                   <ShoppingCartIcon className="h-8 w-8 cursor-pointer text-gray-300 lg:mr-6 mr-4" />
                   <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{total_items}</span>
                 </Link>
+                {isLoggedIn &&
+                <Link to="/wishlist">
+                  <HeartIcon className="h-8 w-8 cursor-pointer text-gray-300 lg:mr-6 mr-4" />
+                  <span className="text-xs absolute top-1 mt-3 ml-4 bg-red-500 text-white font-semibold rounded-full px-2 text-center">{wishlist_total_items}</span>
+                </Link>
+                }
+
               </div>
             </div>
           </div>

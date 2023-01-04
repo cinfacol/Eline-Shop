@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { XIcon, CheckIcon, ClockIcon } from "@heroicons/react/solid";
 import { useEffect } from "react";
-import { useNotification } from "../../hooks/useNotification";
+// import { useNotification } from "../../hooks/useNotification";
+import { useDispatch } from "react-redux";
 
 const WishlistItem = ({
     item,
     count,
-    update_item,
+    // update_item,
     remove_wishlist_item,
     render,
     setRender,
@@ -16,10 +17,10 @@ const WishlistItem = ({
     const [formData, setFormData] = useState({
         item_count: 1
     });
+    const dispatch = useDispatch();
+    // const { displayNotification } = useNotification();
 
-    const { displayNotification } = useNotification();
-
-    const { item_count } = formData;
+    // const { item_count } = formData;
 
     useEffect(() => {
         if (count)
@@ -27,7 +28,7 @@ const WishlistItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [count]);
 
-    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+    /* const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const onSubmit = e => {
         e.preventDefault()
@@ -47,10 +48,10 @@ const WishlistItem = ({
         };
 
         fetchData();
-    }
+    } */
 
     const removeItemHandler = async () => {
-        await remove_wishlist_item(item);
+        await dispatch(remove_wishlist_item(item));
         window.location.reload(false);
     };
     return (
@@ -74,7 +75,7 @@ const WishlistItem = ({
                             </h3>
                         </div>
                         <div className="mt-1 flex text-sm">
-                            <p className="text-gray-500">Color</p>
+                            {/* <p className="text-gray-500">Color</p> */}
                             {/* {product.size ? (
                     <p className="ml-4 pl-4 border-l border-gray-200 text-gray-500">{product.size}</p>
                     ) : null} */}
@@ -83,7 +84,7 @@ const WishlistItem = ({
                     </div>
 
                     <div className="mt-4 sm:mt-0 sm:pr-9">
-                        <form onSubmit={e => onSubmit(e)}>
+                        {/* <form onSubmit={e => onSubmit(e)}>
                             <select
                                 name='item_count'
                                 onChange={(e) => onChange(e)}
@@ -105,7 +106,7 @@ const WishlistItem = ({
                                 className="-m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
                                 <span className="mx-2">Update</span>
                             </button>
-                        </form>
+                        </form> */}
 
                         <div className="absolute top-0 right-0">
                             <button

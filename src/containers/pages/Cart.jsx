@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // import { useNotification } from '../../hooks/useNotification';
 import {
+  remove_item,
+  update_item,
   get_items,
   get_total,
   get_item_total
 } from '../../features/services/cart/cart.service';
 import CartItem from '../../components/cart/CartItem';
 import { Link } from 'react-router-dom';
-import { QuestionMarkCircleIcon } from '@heroicons/react/solid'
-
+import { QuestionMarkCircleIcon } from '@heroicons/react/solid';
 const Cart = () => {
 
   const amount = useSelector(state => state.cart.amount.total_cost);
@@ -26,14 +27,20 @@ const Cart = () => {
   // const { displayNotification } = useNotification();
 
   const dispatch = useDispatch();
-
-
   const [render, setRender] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     dispatch(get_items());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [render]);
+
+  useEffect(() => {
     dispatch(get_total());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [render]);
+
+  useEffect(() => {
     dispatch(get_item_total());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [render]);
@@ -54,6 +61,8 @@ const Cart = () => {
                   <CartItem
                     item={item}
                     count={count}
+                    update_item={update_item}
+                    remove_item={remove_item}
                     render={render}
                     setRender={setRender}
                   />
@@ -101,7 +110,6 @@ const Cart = () => {
           </Link>
         </>
       )
-
     } else {
       return (
         <>
@@ -119,7 +127,6 @@ const Cart = () => {
 
     }
   }
-
   return (
     <Layout>
       <div className='bg-white'>
@@ -130,12 +137,10 @@ const Cart = () => {
               <h2 id='cart-heading' className='sr-only'>
                 Items in your shopping cart
               </h2>
-
               <ul className='border-t border-b border-gray-200 divide-y divide-gray-200'>
                 {showItems()}
               </ul>
             </section>
-
             {/* Order summary */}
             <section
               aria-labelledby='summary-heading'
@@ -144,9 +149,7 @@ const Cart = () => {
               <h2 id='summary-heading' className='text-lg font-medium text-gray-900'>
                 Order summary
               </h2>
-
               <dl className='mt-6 space-y-4'>
-
                 <div className='flex items-center justify-between'>
                   <dt className='text-sm text-gray-600'>Subtotal</dt>
                   {isAuthenticated ?
@@ -154,7 +157,6 @@ const Cart = () => {
                     <dd className='text-sm font-medium text-gray-900'>${guest_amount && guest_amount.toFixed(2)}</dd>
                   }
                 </div>
-
                 <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
                   <dt className='flex items-center text-sm text-gray-600'>
                     <span>Shipping estimate</span>
@@ -165,7 +167,6 @@ const Cart = () => {
                   </dt>
                   <dd className='text-sm font-medium text-gray-900'>$ {shipping.toFixed(2)} </dd>
                 </div>
-
                 <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
                   <dt className='flex text-sm text-gray-600'>
                     <span>Tax estimate</span>
@@ -176,17 +177,14 @@ const Cart = () => {
                   </dt>
                   <dd className='text-sm font-medium text-gray-900'>$ {tax.toFixed(2)} </dd>
                 </div>
-
                 <div className='border-t border-gray-200 pt-4 flex items-center justify-between'>
                   <dt className='text-base font-medium text-gray-900'>Order total</dt>
                   {isAuthenticated ?
                     <dd className='text-base font-medium text-gray-900'>${order_total && order_total.toFixed(2)}</dd> :
                     <dd className='text-base font-medium text-gray-900'>${guest_order_total && guest_order_total.toFixed(2)}</dd>
                   }
-
                 </div>
               </dl>
-
               <div className='mt-6'>
                 {checkoutButton()}
               </div>

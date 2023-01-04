@@ -7,7 +7,8 @@ import { get_wishlist_items,
 const initialState = {
   items: null,
   total_items: 0,
-  status: 'idle'
+  status: 'idle',
+  error: null
 };
 
 export const wishlistSlice = createSlice({
@@ -22,72 +23,48 @@ export const wishlistSlice = createSlice({
   extraReducers: (builder) => {
     builder
     .addCase(get_wishlist_items.pending, (state) => {
-      if (state.status === 'idle') {
         state.status = 'pending';
-      }
     })
     .addCase(get_wishlist_items.fulfilled, (state, action) => {
-      if (state.status === 'pending') {
         state.status = 'idle';
         state.items = action.payload.wishlist;
-      }
     })
     .addCase(get_wishlist_items.rejected, (state, action) => {
-      if (state.status === 'pending') {
         state.status = 'idle';
         // state.error = action.error.message
-      }
     })
     .addCase(add_wishlist_item.pending, (state) => {
-      if (state.status === 'idle') {
         state.status = 'pending';
-      }
     })
     .addCase(add_wishlist_item.fulfilled, (state, action) => {
-      if (state.status === 'pending') {
         state.status = 'idle';
         state.items = action.payload;
-      }
     })
     .addCase(add_wishlist_item.rejected, (state, action) => {
-      if (state.status === 'pending') {
-        state.status = 'idle';
-        state.error = action.error.message
-      }
+      state.status = 'idle';
+      state.error = action.error.message;
     })
     .addCase(get_wishlist_item_total.pending, (state) => {
-      if (state.status === 'idle') {
-        state.status = 'pending';
-      }
+      state.status = 'pending';
     })
     .addCase(get_wishlist_item_total.fulfilled, (state, action) => {
-      if (state.status === 'pending') {
-        state.status = 'idle';
-        state.total_items = action.payload.total_items;
-      }
+      state.status = 'idle';
+      state.total_items = action.payload.total_items;
     })
     .addCase(get_wishlist_item_total.rejected, (state, action) => {
-      if (state.status === 'pending') {
-        state.status = 'idle';
-        // state.error = action.error.message
-      }
+      state.status = 'idle';
+      state.error = action.error.message
     })
     .addCase(remove_wishlist_item.pending, (state) => {
-      if (state.status === 'idle') {
-        state.status = 'pending';
-      }
+      state.status = 'pending';
     })
     .addCase(remove_wishlist_item.fulfilled, (state, action) => {
-      if (state.status === 'pending') {
-        state.status = 'idle';
-        state.items = action.payload.wishlist;
-      }
+      state.status = 'idle';
+      state.items = action.payload.wishlist;
     })
     .addCase(remove_wishlist_item.rejected, (state, action) => {
-      if (state.status === 'pending') {
-        state.status = 'idle';
-        // state.error = action.error.message
-      }
+      state.status = 'idle';
+      state.error = action.error.message
     })
   }
 })

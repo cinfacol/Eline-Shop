@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import { StarIcon } from '@heroicons/react/solid';
-import { HeartIcon,
+import {
   MinusSmIcon,
   PlusSmIcon,
   CheckCircleIcon,
@@ -115,13 +115,12 @@ export default function ProductDetail() {
           }
         });
       }
-      console.log('is_present', isPresent);
       if (isPresent) {
         dispatch(remove_wishlist_item(product_id));
         dispatch(get_wishlist_items());
         dispatch(get_wishlist_item_total());
       } else {
-        // dispatch(remove_wishlist_item(product.id));
+        dispatch(remove_wishlist_item(product.id));
         dispatch(add_wishlist_item(product_id));
         dispatch(get_wishlist_items());
         dispatch(get_wishlist_item_total());
@@ -300,13 +299,6 @@ export default function ProductDetail() {
                     }
                 </form>
 
-                {/* <button
-                  type="button"
-                  onClick={addToWishlist}
-                  className="ml-4 py-3 px-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500">
-                  <HeartIcon className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-                  <span className="sr-only">Add to favorites</span>
-                </button> */}
                 <WishlistHeart
                   product={product}
                   wishlist={wishlist}

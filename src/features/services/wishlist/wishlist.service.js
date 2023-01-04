@@ -91,8 +91,9 @@ export const get_wishlist_item_total = createAsyncThunk(
 
 export const remove_wishlist_item = createAsyncThunk(
   'wishlist/remove_wishlist_item',
-  async (product_id, thunkAPI) => {
+  async (item, thunkAPI) => {
     if (localStorage.getItem('access')) {
+      const product_id = item.product.id;
       const body = JSON.stringify({
         product_id
       });

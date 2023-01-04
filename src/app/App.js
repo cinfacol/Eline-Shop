@@ -11,6 +11,7 @@ import ProductDetail from '../containers/pages/productDetail';
 import Search from '../containers/pages/Search';
 import Error404 from '../containers/errors/Error404';
 import Cart from '../containers/pages/Cart';
+import Wishlist from '../containers/pages/WishList';
 import Checkout from '../containers/pages/Checkout';
 import ThankYou from '../containers/pages/ThankYou';
 import Dashboard from '../containers/pages/Dashboard';
@@ -44,6 +45,7 @@ function App() {
         <Route exact path='/dashboard/payments' element={<DashboardPayments />} />
         <Route exact path='/dashboard/payment/:transaction_id' element={<DashboardPaymentDetail />} />
         <Route exact path='/dashboard/profile' element={<DashboardProfile />} />
+        <Route exact path='/wishlist' element={<Wishlist />} />
       </Routes>
     </Router>
   );
