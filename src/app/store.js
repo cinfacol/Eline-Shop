@@ -13,6 +13,7 @@ import paymentReducer from '../features/payment/paymentSlice';
 import ordersReducer from '../features/orders/ordersSlice';
 import profileReducer from '../features/profile/profileSlice';
 import wishlistReducer from '../features/wishlist/wishlistSlice.js';
+import reviewsReducer from '../features/reviews/reviewsSlice.js';
 
 const reducer = {
   auth: authReducer,
@@ -29,6 +30,7 @@ const reducer = {
   orders: ordersReducer,
   profile: profileReducer,
   wishlist: wishlistReducer,
+  reviews: reviewsReducer,
 }
 
 const store = configureStore({
