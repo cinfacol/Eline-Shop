@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
-import { StarIcon } from '@heroicons/react/solid';
 import {
   MinusSmIcon,
   PlusSmIcon,
@@ -18,11 +17,11 @@ import { get_wishlist_items,
   get_wishlist_item_total,
   remove_wishlist_item } from '../../features/services/wishlist/wishlist.service';
 import { get_reviews,
-  get_review,
   create_review,
   update_review,
-  delete_review,
-  filter_reviews } from '../../features/services/reviews.js/reviews.service';
+  // delete_review,
+  filter_reviews,
+  get_review} from '../../features/services/reviews.js/reviews.service';
 import { Oval } from 'react-loader-spinner';
 import { useNotification } from '../../hooks/useNotification';
 import WishlistHeart from '../../components/product/WishlistHeart';
@@ -39,6 +38,9 @@ function classNames(...classes) {
 export default function ProductDetail() {
   const params = useParams();
   const productId = params.productId;
+
+  const reviews = useSelector(state => state.reviews.reviews);
+  const review = useSelector(state => state.reviews.review);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -61,31 +63,10 @@ export default function ProductDetail() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
-  /* useEffect(() => {
-    dispatch(get_review());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   useEffect(() => {
-    dispatch(create_review());
+    dispatch(get_review(productId));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    dispatch(update_review());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    dispatch(delete_review());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    dispatch(filter_reviews());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); */
-
+  }, [productId]);
 
   const isAuthenticated = useSelector(state => state.auth.user.isLoggedIn);
   const product = useSelector(state => state.products.product);
@@ -99,8 +80,6 @@ export default function ProductDetail() {
   const colores = product && product.color;
   const wishlist = useSelector(state => state.wishlist.items);
   // const wishlist_total = useSelector(state => state.wishlist.total_items);
-  const reviews = useSelector(state => state.reviews.reviews);
-  const review = useSelector(state => state.reviews.review);
 
   let loading = false;
 
@@ -140,22 +119,20 @@ export default function ProductDetail() {
     if (isAuthenticated) {
       let isPresent = false;
       const product_id = product && product.id.toString();
-      if (
+
         wishlist &&
         wishlist !== null &&
         wishlist !== undefined &&
         product &&
         product !== null &&
-        product !== undefined
-      ) {
-
+        product !== undefined &&
         // eslint-disable-next-line array-callback-return
         wishlist.map(item => {
           if (item.product.id.toString() === product_id) {
             isPresent = true;
           }
         });
-      }
+
       if (isPresent) {
         dispatch(remove_wishlist_item(product_id));
         dispatch(get_wishlist_items());
@@ -186,19 +163,19 @@ export default function ProductDetail() {
   const leaveReview = e => {
     e.preventDefault()
     if (rating !== null)
-      create_review(productId, rating, comment);
+      dispatch(create_review({productId, rating, comment}));
   }
 
   const updateReview = e => {
     e.preventDefault()
     if (rating !== null)
-      update_review(productId, rating, comment);
+      dispatch(update_review({productId, rating, comment}));
   }
 
   /* const deleteReview = () => {
     const fetchData = async () => {
-      await delete_review(productId);
-      await get_review(productId);
+      await dispatch(delete_review(productId));
+      await dispatch(get_review(productId));
       // setRating(5.0);
       setFormData({
         comment: ''
@@ -207,13 +184,32 @@ export default function ProductDetail() {
     fetchData();
   }; */
 
-  const filterReviews = numStars => {
-    dispatch(filter_reviews(productId, numStars));
+  const filterReviews = (rating) => {
+    dispatch(filter_reviews({productId, rating}));
   };
 
   const getReviews = () => {
     dispatch(get_reviews(productId));
   };
+
+  let promedio = []
+
+  const getMediaReviews = () => {
+    <>
+      {reviews && Array.isArray(reviews) ? reviews.map((review) => (
+        <div key = {review.id}>
+          {
+            promedio.push(review.rating)
+          }
+        </div>
+      )
+      ) : ''}
+    </>
+  }
+  reviews && getMediaReviews();
+
+  let sum = promedio.reduce((previous, current) => current += previous, 0);
+  let media_rating = sum / promedio.length;
 
   return (
     <Layout>
@@ -277,17 +273,8 @@ export default function ProductDetail() {
               <div className="mt-3">
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
-                  <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                      <StarIcon
-                        key={rating}
-                        className={classNames(
-                          producto.rating > rating ? 'text-indigo-500' : 'text-gray-300',
-                          'h-5 w-5 flex-shrink-0'
-                        )}
-                        aria-hidden="true"
-                      />
-                    ))}
+                  <div>
+                    {<Stars rating={media_rating} />} de {promedio.length} {(promedio.length === 1) ? 'reseña' : 'reseñas' }
                   </div>
                   <p className="sr-only">{producto.rating} out of 5 stars</p>
                 </div>
@@ -482,7 +469,7 @@ export default function ProductDetail() {
                   {
                     isAuthenticated &&
                       review &&
-                      review.id ?
+                      review.id  ?
                       <form onSubmit={e => updateReview(e)}>
                         <div>
                           <label htmlFor="comment" className="block text-sm font-medium text-gray-700">
@@ -509,6 +496,7 @@ export default function ProductDetail() {
                           value={rating}
                           onChange={e => onChange(e)}
                           placeholder="0 - 5">
+                          <option defaultValue="">0</option>
                           <option value="1">1</option>
                           <option value="2">2</option>
                           <option value="3">3</option>
@@ -547,6 +535,7 @@ export default function ProductDetail() {
                           value={rating}
                           onChange={e => onChange(e)}
                           placeholder="0 - 5">
+                          <option defaultValue="">0</option>
                           <option value="1">1</option>
                           <option value="2">2</option>
                           <option value="3">3</option>
@@ -563,8 +552,10 @@ export default function ProductDetail() {
                   }
                 </div>
                 <div className="col-span-3">
-                  {reviews && reviews.map((review, index) => (
-                    <div key={index}>
+                  {reviews &&
+                  Array.isArray(reviews) ?
+                  reviews.map((review) => (
+                    <div key={review.id}>
                       <div className="flex">
                         <div className="mx-4 flex-shrink-0">
                           <span className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
@@ -574,15 +565,16 @@ export default function ProductDetail() {
                           </span>
                         </div>
                         <div>
-                          <Stars rating={review.rating} />
                           <h4 className="text-lg font-bold">{review.user}</h4>
+                          <Stars rating={review.rating} />
                           <p className="mt-1">
                             {review.comment}
                           </p>
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )) : ''
+                  }
                 </div>
               </div>
             </section>

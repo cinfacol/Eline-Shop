@@ -3,7 +3,7 @@ import { authApi } from '../auth/authApi';
 
 export const get_reviews = createAsyncThunk(
   'reviews/get_reviews',
-  async (product_id, thunkAPI) => {
+  async (productId, thunkAPI) => {
     if (localStorage.getItem('access')) {
       const config = {
         headers: {
@@ -11,7 +11,7 @@ export const get_reviews = createAsyncThunk(
         }
       };
       try {
-        const res = await authApi.get(`/api/reviews/get-reviews/${product_id}`, config);
+        const res = await authApi.get(`/api/reviews/get-reviews/${productId}`, config);
         if (res.status === 200) {
           return res.data;
         } else {
@@ -30,7 +30,7 @@ export const get_reviews = createAsyncThunk(
 
 export const create_review = createAsyncThunk(
   'reviews/create_review',
-  async ({product_id, rating, comment}, thunkAPI) => {
+  async ({productId, rating, comment}, thunkAPI) => {
     if (localStorage.getItem('access')) {
       const config = {
         headers: {
@@ -44,7 +44,7 @@ export const create_review = createAsyncThunk(
         comment
       });
       try {
-        const res = await authApi.post(`/api/reviews/create-review/${product_id}`, body, config);
+        const res = await authApi.post(`/api/reviews/create-review/${productId}`, body, config);
         if (res.status === 201) {
           return res.data;
         } else {
@@ -63,7 +63,7 @@ export const create_review = createAsyncThunk(
 
 export const get_review = createAsyncThunk(
   'reviews/get_review',
-  async (product_id, thunkAPI) => {
+  async (productId, thunkAPI) => {
     if (localStorage.getItem('access')) {
       const config = {
         headers: {
@@ -72,7 +72,7 @@ export const get_review = createAsyncThunk(
         }
       };
       try {
-        const res = await authApi.get(`/api/reviews/get-review/${product_id}`, config);
+        const res = await authApi.get(`/api/reviews/get-review/${productId}`, config);
         if (res.status === 200) {
           return res.data;
         } else {
@@ -91,7 +91,7 @@ export const get_review = createAsyncThunk(
 
 export const update_review = createAsyncThunk(
   'reviews/update_review',
-  async ({product_id, rating, comment}, thunkAPI) => {
+  async ({productId, rating, comment}, thunkAPI) => {
     if (localStorage.getItem('access')) {
       const config = {
         headers: {
@@ -105,7 +105,7 @@ export const update_review = createAsyncThunk(
         comment
       });
       try {
-        const res = await authApi.put(`/api/reviews/update-review/${product_id}`, body, config);
+        const res = await authApi.put(`/api/reviews/update-review/${productId}`, body, config);
         if (res.status === 200) {
           return res.data;
         } else {
@@ -124,7 +124,7 @@ export const update_review = createAsyncThunk(
 
 export const delete_review = createAsyncThunk(
   'reviews/delete_review',
-  async (product_id, thunkAPI) => {
+  async (productId, thunkAPI) => {
     if (localStorage.getItem('access')) {
       const config = {
         headers: {
@@ -135,7 +135,7 @@ export const delete_review = createAsyncThunk(
       };
 
       try {
-        const res = await authApi.delete(`/api/reviews/delete-review/${product_id}`, config);
+        const res = await authApi.delete(`/api/reviews/delete-review/${productId}`, config);
         if (res.status === 200) {
           return res.data;
         } else {
@@ -154,7 +154,7 @@ export const delete_review = createAsyncThunk(
 
 export const filter_reviews = createAsyncThunk(
   'reviews/filter_reviews',
-  async ({product_id, rating}, thunkAPI) => {
+  async ({productId, rating}, thunkAPI) => {
     const config = {
       headers: {
         'Accept': 'application/json'
@@ -185,7 +185,7 @@ export const filter_reviews = createAsyncThunk(
       myRating = '5.0';
 
     try {
-      const res = await authApi.get(`/api/reviews/filter-reviews/${product_id}?rating=${myRating}`, config);
+      const res = await authApi.get(`/api/reviews/filter-reviews/${productId}?rating=${myRating}`, config);
       if (res.status === 200) {
         return res.data;
       } else {

@@ -46,7 +46,7 @@ export const reviewsSlice = createSlice({
     })
     .addCase(create_review.fulfilled, (state, action) => {
       state.status = 'idle';
-      state.reviews = action.payload.reviews;
+      state.reviews = action.payload.review;
     })
     .addCase(create_review.rejected, (state, action) => {
       state.status = 'idle';
