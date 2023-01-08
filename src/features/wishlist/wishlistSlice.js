@@ -38,7 +38,7 @@ export const wishlistSlice = createSlice({
     })
     .addCase(add_wishlist_item.fulfilled, (state, action) => {
         state.status = 'idle';
-        state.items = action.payload;
+        state.items = action.payload.wishlist;
     })
     .addCase(add_wishlist_item.rejected, (state, action) => {
       state.status = 'idle';

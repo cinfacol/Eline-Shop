@@ -75,6 +75,7 @@ function classNames(...classes) {
 export default function Navbar() {
 
   const dispatch = useDispatch();
+  const wishlist_items = useSelector(state => state.wishlist.items)
 
   const navigate = useNavigate();
 
@@ -108,7 +109,7 @@ export default function Navbar() {
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wishlist_items]);
 
 
 

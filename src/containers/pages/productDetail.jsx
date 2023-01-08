@@ -1,7 +1,7 @@
 import Layout from '../../hocs/Layout';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useNavigate, Navigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react';
 import {
   MinusSmIcon,
@@ -12,14 +12,10 @@ import { get_product } from '../../features/services/products/products.service';
 import { add_item,
   get_item_total,
   get_total } from '../../features/services/cart/cart.service';
-import { get_wishlist_items,
-  add_wishlist_item,
-  get_wishlist_item_total,
-  remove_wishlist_item } from '../../features/services/wishlist/wishlist.service';
+import { get_wishlist_items, get_wishlist_item_total} from '../../features/services/wishlist/wishlist.service';
 import { get_reviews,
   create_review,
   update_review,
-  // delete_review,
   filter_reviews,
   get_review} from '../../features/services/reviews.js/reviews.service';
 import { Oval } from 'react-loader-spinner';
@@ -27,9 +23,9 @@ import { useNotification } from '../../hooks/useNotification';
 import WishlistHeart from '../../components/product/WishlistHeart';
 import Stars from '../../components/product/Stars';
 
-const producto = {
+/* const producto = {
   rating: 4,
-}
+} */
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -61,7 +57,7 @@ export default function ProductDetail() {
   useEffect(() => {
     dispatch(get_reviews(productId));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId]);
+  }, [productId, reviews]);
 
   useEffect(() => {
     dispatch(get_review(productId));
@@ -78,7 +74,7 @@ export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(first_color);
 
   const colores = product && product.color;
-  const wishlist = useSelector(state => state.wishlist.items);
+  // const wishlist = useSelector(state => state.wishlist.items);
   // const wishlist_total = useSelector(state => state.wishlist.total_items);
 
   let loading = false;
@@ -115,39 +111,7 @@ export default function ProductDetail() {
     }
   }
 
-  const addToWishlist = () => {
-    if (isAuthenticated) {
-      let isPresent = false;
-      const product_id = product && product.id.toString();
 
-        wishlist &&
-        wishlist !== null &&
-        wishlist !== undefined &&
-        product &&
-        product !== null &&
-        product !== undefined &&
-        // eslint-disable-next-line array-callback-return
-        wishlist.map(item => {
-          if (item.product.id.toString() === product_id) {
-            isPresent = true;
-          }
-        });
-
-      if (isPresent) {
-        dispatch(remove_wishlist_item(product_id));
-        dispatch(get_wishlist_items());
-        dispatch(get_wishlist_item_total());
-      } else {
-        dispatch(remove_wishlist_item(product.id));
-        dispatch(add_wishlist_item(product_id));
-        dispatch(get_wishlist_items());
-        dispatch(get_wishlist_item_total());
-      }
-
-    } else {
-      return <Navigate to="/login" />
-    }
-  };
 
   // const [rating, setRating] = useState(5.0);
 
@@ -276,7 +240,6 @@ export default function ProductDetail() {
                   <div>
                     {<Stars rating={media_rating} />} de {promedio.length} {(promedio.length === 1) ? 'reseña' : 'reseñas' }
                   </div>
-                  <p className="sr-only">{producto.rating} out of 5 stars</p>
                 </div>
               </div>
 
@@ -367,11 +330,7 @@ export default function ProductDetail() {
                     }
                 </form>
 
-                <WishlistHeart
-                  product={product}
-                  wishlist={wishlist}
-                  addToWishlist={addToWishlist}
-                />
+                <WishlistHeart />
               </div>
 
               <section aria-labelledby="details-heading" className="mt-12">
