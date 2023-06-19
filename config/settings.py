@@ -4,25 +4,24 @@ from pathlib import Path
 
 import environ
 
-env = environ.Env()
-environ.Env.read_env()
-
-ENVIRONMENT = env
+env = environ.Env(DEBUG=(bool, False))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+environ.Env.read_env(BASE_DIR / ".env")
+
+SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = True
 
-DOMAIN = os.environ.get('DOMAIN')
+DOMAIN = env('DOMAIN')
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
 ]
 
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+RENDER_EXTERNAL_HOSTNAME = env('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
@@ -217,10 +216,10 @@ DJOSER = {
     },
 }
 
-BT_ENVIRONMENT = os.environ.get('BT_ENVIRONMENT')
-BT_MERCHANT_ID = os.environ.get('BT_MERCHANT_ID')
-BT_PUBLIC_KEY = os.environ.get('BT_PUBLIC_KEY')
-BT_PRIVATE_KEY = os.environ.get('BT_PRIVATE_KEY')
+BT_ENVIRONMENT = env('BT_ENVIRONMENT')
+BT_MERCHANT_ID = env('BT_MERCHANT_ID')
+BT_PUBLIC_KEY = env('BT_PUBLIC_KEY')
+BT_PRIVATE_KEY = env('BT_PRIVATE_KEY')
 
 AUTH_USER_MODEL = 'user.UserAccount'
 
